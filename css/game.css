@@ -1,0 +1,18 @@
+.controls {
+	width: 200px;
+	height: 200px;
+	font-size: 24px;
+	padding: 20px;
+	display:inline-block;
+	border: 2px solid black;
+}
+
+.card {
+	width: 200px;
+	height: 300px;
+	border: 2px solid black;
+	border-radius: 5px;
+	display:inline-block;
+	margin: 20px;
+	padding: 20px;
+}

@@ -1,0 +1,29 @@
+---
+title: Neptune 9.2
+categories: [games]
+description: A shootout in a space-corridor for 2 players.
+order: 9
+date: 2014-01-27
+icon: neptune9/neptune9-icon.png
+---
+<html lang="en-US" ng-app="neptune9">
+<head>
+	<meta charset="UTF-8">
+	<title>Neptune 9</title>
+	<link rel="stylesheet" href="css/game.css">
+	<script data-main="js/game" src="js/angular.js"></script>
+	<script data-main="js/game" src="js/neptune9.js"></script>
+	{% include analytics.html %}
+</head>
+<body>
+	<div>
+		<div class="card" ng-repeat="creature in creatures" ng-controller="CardCtrl" ng-init="init($index)">
+			<div>{{creature.name}}</div>
+			<div>{{creature.hp}}</div>
+		</div>
+		<div class="controls" ng-repeat="player in players" ng-controller="ControlCtrl" ng-init="init($index)">
+			<div ng-repeat="action in actions"><span ng-bind-html="action.key | unsafe"></span> - {{action.move}}</div>
+		</div>
+	</div>
+</body>
+</html>
