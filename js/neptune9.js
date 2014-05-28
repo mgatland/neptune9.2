@@ -47,9 +47,8 @@ angular.module('neptune9', [])
 })
 
 .controller('ControlCtrl', function($scope, gameService, keyboardService) {
-	var keys = [];
-	keys[0] = ['w', 's', 'a', 'd'];
-	keys[1] = ['&#8593;', '&#8595;', '&#8592;', '&#8594;'];
+//	keys[0] = ['w', 's', 'a', 'd'];
+//	keys[1] = ['&#8593;', '&#8595;', '&#8592;', '&#8594;'];
 	$scope.num = 0;
 	$scope.player = null;
 	$scope.targetNum = 0;
@@ -88,9 +87,7 @@ angular.module('neptune9', [])
 	}
 
 })
-
 ;
-
 
 // non-angular code
 
@@ -105,6 +102,8 @@ if (typeof KeyEvent == "undefined") {
         DOM_VK_A: 65,
         DOM_VK_S: 83,
         DOM_VK_D: 68,
+
+        DOM_VK_E: 69,
 
         DOM_VK_ENTER: 14,
         DOM_VK_RETURN: 13
@@ -122,11 +121,14 @@ var Keyboard = function () {
 		  newActions[KeyEvent.DOM_VK_A] = "left";
 		  newActions[KeyEvent.DOM_VK_S] = "down";
 		  newActions[KeyEvent.DOM_VK_D] = "right";
+		  newActions[KeyEvent.DOM_VK_E] = "use";
 		} else if (i == 1) {
 			newActions[KeyEvent.DOM_VK_LEFT] = "left";
 		  newActions[KeyEvent.DOM_VK_UP] = "up";
 		  newActions[KeyEvent.DOM_VK_RIGHT] = "right";
 		  newActions[KeyEvent.DOM_VK_DOWN] = "down";
+		  newActions[KeyEvent.DOM_VK_ENTER] = "use";
+		  newActions[KeyEvent.DOM_VK_RETURN] = "use";
 		}
 		actions[i] = {map: newActions, callback: callback}
 	}
