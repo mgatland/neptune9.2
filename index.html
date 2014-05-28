@@ -22,7 +22,11 @@ icon: neptune9/neptune9-icon.png
 			<div>{{creature.hp}}</div>
 		</div>
 		<div class="controls" ng-repeat="player in players" ng-controller="ControlCtrl" ng-init="init($index)">
-			<div ng-repeat="action in actions" ng-click="useAction(action)"><span ng-bind-html="action.key | unsafe"></span> - {{action.move}}</div>
+			<div 
+			ng-repeat="action in player.creature.moves" 
+			ng-click="useAction(action)"
+			ng-class="{selected: $index==selectedAction}">{{action}}</div>
+			<div>Target: {{targetName}}</div>
 		</div>
 	</div>
 </body>

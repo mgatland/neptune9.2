@@ -52,33 +52,39 @@ angular.module('neptune9', [])
 	keys[1] = ['&#8593;', '&#8595;', '&#8592;', '&#8594;'];
 	$scope.num = 0;
 	$scope.player = null;
-	$scope.actions = [];
 	$scope.targetNum = 0;
+	$scope.targetName = "--";
+	$scope.selectedAction = 0;
 
-	var keyboardAction = function (key) {
-		console.log("Player " + $scope.num + " did " + key)
+	var keyCallback = function (key) {
+		console.log("Player " + $scope.num + " did " + key);
+		$scope.$apply(function () { //called externally, so we must apply
+			var actions = $scope.player.creature.moves;
+			if (key === "left") {
+				$scope.targetNum = 2;
+			} else if (key === "right") {
+				$scope.targetNum = 3;
+			} else if (key === "down") {
+				$scope.selectedAction++;
+				if ($scope.selectedAction >= actions.length) $scope.selectedAction = 0;
+			} else if (key === "up") {
+				$scope.selectedAction--;
+				if ($scope.selectedAction < 0 ) $scope.selectedAction = actions.length - 1;
+			}
+			$scope.targetName = gameService.creatures[$scope.targetNum].name;	
+		});
 	}
 
 	$scope.init = function (num) {
 		$scope.num = num;
 		$scope.targetNum = num + 2;
+		$scope.targetName = gameService.creatures[$scope.targetNum].name;	
 		$scope.player = gameService.players[num];
-		$scope.updateActions();
-		keyboardService.setActions(num, keyboardAction);
-	}
-
-	$scope.updateActions = function () {
-		var c = $scope.player.creature;
-		var num = $scope.num;
-		var actions = [];
-		c.moves.forEach(function (v, i) {
-			actions.push({key: keys[num][i], move: c.moves[i]})
-		});
-		$scope.actions = actions;
+		keyboardService.setActions(num, keyCallback);
 	}
 
 	$scope.useAction = function (action) {
-		console.log("Using action " + action.move);
+		console.log("Using action " + action);
 	}
 
 })

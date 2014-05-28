@@ -16,3 +16,7 @@
 	margin: 20px;
 	padding: 20px;
 }
+
+.selected {
+	font-weight: bold;
+}
