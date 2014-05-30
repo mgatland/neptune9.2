@@ -69,6 +69,8 @@ angular.module('neptune9', [])
 			} else if (key === "up") {
 				$scope.selectedAction--;
 				if ($scope.selectedAction < 0 ) $scope.selectedAction = actions.length - 1;
+			} else if (key === "use") {
+				$scope.player.creature.useAction($scope.selectedAction, $scope.targetNum);
 			}
 			$scope.targetName = gameService.creatures[$scope.targetNum].name;	
 		});
@@ -80,10 +82,6 @@ angular.module('neptune9', [])
 		$scope.targetName = gameService.creatures[$scope.targetNum].name;	
 		$scope.player = gameService.players[num];
 		keyboardService.setActions(num, keyCallback);
-	}
-
-	$scope.useAction = function (action) {
-		console.log("Using action " + action);
 	}
 
 })
