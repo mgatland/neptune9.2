@@ -1,3 +1,28 @@
+//Game code
+
+var normalMoves = [];
+normalMoves.push({name:"Attack", act: function (user, target) {
+	target.hp -= 1;
+}});
+normalMoves.push({name:"Recover", act: function (user, target) {
+	user.hp += 1;
+}});
+normalMoves.push({name:"Protect", act: function (user, target) {
+	user.hp += 1;
+}});
+normalMoves.push({name:"Charge", act: function (user, target) {
+	user.name += "!";
+}});
+
+function Creature (options) {
+	this.name = "Name";
+	this.hp = 10;
+	this.moves = normalMoves;
+	for (var attrname in options) {
+	 this[attrname] = options[attrname]; 
+	};
+}
+
 //angular code
 
 angular.module('neptune9', [])
@@ -5,15 +30,21 @@ angular.module('neptune9', [])
 .factory('gameService', function() {
   var gameService = {};
   gameService.creatures = [];
-  var normalMoves = ["Attack", "Recover", "Protect", "Charge"];
-  gameService.creatures[0] = {name:"Matthew", hp:10, moves: normalMoves};
-  gameService.creatures[1] = {name:"Ålice", hp:20, moves: normalMoves};
-  gameService.creatures[2] = {name:"Someone", hp:30, moves: normalMoves};
-  gameService.creatures[3] = {name:"Else", hp:40, moves: normalMoves};
+  gameService.creatures[0] = new Creature({name:"Matthew", hp:10});
+  gameService.creatures[1] = new Creature({name:"Ålice", hp:20});
+  gameService.creatures[2] = new Creature({name:"Someone", hp:30});
+  gameService.creatures[3] = new Creature({name:"Else", hp:40});
 
   gameService.players = [];
   gameService.players[0] = {creature: gameService.creatures[0]};
   gameService.players[1] = {creature: gameService.creatures[1]};
+
+  gameService.useAction = function(user, actionNum, targetNum) {
+  	var action = user.moves[actionNum];
+  	var target = gameService.creatures[targetNum];
+  	console.log(user.name + " used " + action.name + " on " + target.name);
+  	action.act(user, target);
+  }
 
   return gameService;
 })
@@ -70,7 +101,7 @@ angular.module('neptune9', [])
 				$scope.selectedAction--;
 				if ($scope.selectedAction < 0 ) $scope.selectedAction = actions.length - 1;
 			} else if (key === "use") {
-				$scope.player.creature.useAction($scope.selectedAction, $scope.targetNum);
+				gameService.useAction($scope.player.creature, $scope.selectedAction, $scope.targetNum);
 			}
 			$scope.targetName = gameService.creatures[$scope.targetNum].name;	
 		});

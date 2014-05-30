@@ -24,7 +24,7 @@ icon: neptune9/neptune9-icon.png
 		<div class="controls" ng-repeat="player in players" ng-controller="ControlCtrl" ng-init="init($index)">
 			<div 
 			ng-repeat="action in player.creature.moves" 
-			ng-class="{selected: $index==selectedAction}">{{action}}</div>
+			ng-class="{selected: $index==selectedAction}">{{action.name}}</div>
 			<div>Target: {{targetName}}</div>
 		</div>
 	</div>
