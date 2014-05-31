@@ -31,7 +31,7 @@ function Creature (options) {
 
 angular.module('neptune9', [])
 
-.factory('gameService', function() {
+.factory('gameService', function($rootScope) {
   var gs = {};
 
   gs.turn = 0;
@@ -52,6 +52,18 @@ angular.module('neptune9', [])
   	gs.creatures[i].num = i;
   }
 
+  var endTurn = function(gs) {
+  	gs.turn++;
+  	if (gs.turn >= 4) gs.turn = 0;
+  	moveIsUsed = false;
+  	var creature = gs.creatures[gs.turn];
+  	if (creature.ai != null) {
+  		var action = creature.ai(gs);
+  		gs.useAction(creature, action.move, action.target);
+  	}
+  	$rootScope.$apply();
+  }
+
   gs.useAction = function(user, actionNum, targetNum) {
   	if (gs.creatures[gs.turn] !== user) {
   		console.log("Someone tried to act but it's not their turn.");
@@ -64,16 +76,7 @@ angular.module('neptune9', [])
   	console.log(user.name + " used " + action.name + " on " + target.name);
   	action.act(user, target);
 
-  	//todo: insert delay for animations...
-
-  	gs.turn++;
-  	if (gs.turn >= 4) gs.turn = 0;
-  	moveIsUsed = false;
-  	var creature = gs.creatures[gs.turn];
-  	if (creature.ai != null) {
-  		var action = creature.ai(gs);
-  		gs.useAction(creature, action.move, action.target);
-  	}
+		window.setTimeout(endTurn, 1000, gs);
   }
 
   return gs;
