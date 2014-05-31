@@ -18,6 +18,10 @@ function Creature (options) {
 	this.name = "Name";
 	this.hp = 10;
 	this.moves = normalMoves;
+	this.ai = function (gs) {
+		gs.useAction(this, 0, (this.num + 2) % 4);
+	};
+
 	for (var attrname in options) {
 	 this[attrname] = options[attrname]; 
 	};
@@ -32,15 +36,22 @@ angular.module('neptune9', [])
 
   gs.turn = 0;
 
+  var noAi = function () {};
+
   gs.creatures = [];
-  gs.creatures[0] = new Creature({name:"Matthew", hp:10});
-  gs.creatures[1] = new Creature({name:"Ålice", hp:20});
+  gs.creatures[0] = new Creature({name:"Matthew", hp:10, ai: noAi});
+  gs.creatures[1] = new Creature({name:"Ålice", hp:20, ai: noAi});
   gs.creatures[2] = new Creature({name:"Someone", hp:30});
   gs.creatures[3] = new Creature({name:"Else", hp:40});
 
   gs.players = [];
   gs.players[0] = {creature: gs.creatures[0]};
   gs.players[1] = {creature: gs.creatures[1]};
+
+  //let every creature know its index.
+  for (var i = 0; i < 4; i++) {
+  	gs.creatures[i].num = i;
+  }
 
   gs.useAction = function(user, actionNum, targetNum) {
   	if (gs.creatures[gs.turn] !== user) {
@@ -51,8 +62,12 @@ angular.module('neptune9', [])
   	var target = gs.creatures[targetNum];
   	console.log(user.name + " used " + action.name + " on " + target.name);
   	action.act(user, target);
+
+  	//todo: insert delay for animations...
+
   	gs.turn++;
   	if (gs.turn >= 4) gs.turn = 0;
+  	gs.creatures[gs.turn].ai(gs);
   }
 
   return gs;
