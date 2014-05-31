@@ -28,25 +28,34 @@ function Creature (options) {
 angular.module('neptune9', [])
 
 .factory('gameService', function() {
-  var gameService = {};
-  gameService.creatures = [];
-  gameService.creatures[0] = new Creature({name:"Matthew", hp:10});
-  gameService.creatures[1] = new Creature({name:"Ålice", hp:20});
-  gameService.creatures[2] = new Creature({name:"Someone", hp:30});
-  gameService.creatures[3] = new Creature({name:"Else", hp:40});
+  var gs = {};
 
-  gameService.players = [];
-  gameService.players[0] = {creature: gameService.creatures[0]};
-  gameService.players[1] = {creature: gameService.creatures[1]};
+  gs.turn = 0;
 
-  gameService.useAction = function(user, actionNum, targetNum) {
+  gs.creatures = [];
+  gs.creatures[0] = new Creature({name:"Matthew", hp:10});
+  gs.creatures[1] = new Creature({name:"Ålice", hp:20});
+  gs.creatures[2] = new Creature({name:"Someone", hp:30});
+  gs.creatures[3] = new Creature({name:"Else", hp:40});
+
+  gs.players = [];
+  gs.players[0] = {creature: gs.creatures[0]};
+  gs.players[1] = {creature: gs.creatures[1]};
+
+  gs.useAction = function(user, actionNum, targetNum) {
+  	if (gs.creatures[gs.turn] !== user) {
+  		console.log("Someone tried to act but it's not their turn.");
+  		return;
+  	}
   	var action = user.moves[actionNum];
-  	var target = gameService.creatures[targetNum];
+  	var target = gs.creatures[targetNum];
   	console.log(user.name + " used " + action.name + " on " + target.name);
   	action.act(user, target);
+  	gs.turn++;
+  	if (gs.turn >= 4) gs.turn = 0;
   }
 
-  return gameService;
+  return gs;
 })
  
 .factory('keyboardService', function(gameService) {
@@ -66,6 +75,10 @@ angular.module('neptune9', [])
 	$scope.init = function (num) {
 		$scope.num = num;
 		$scope.creature = gameService.creatures[$scope.num];
+	}
+
+	$scope.isMyTurn = function () {
+		return gameService.turn === $scope.num;
 	}
 
 })

@@ -7,6 +7,10 @@
 	border: 2px solid black;
 }
 
+.selected {
+	font-weight: bold;
+}
+
 .card {
 	width: 200px;
 	height: 150px;
@@ -17,6 +21,6 @@
 	padding: 20px;
 }
 
-.selected {
-	font-weight: bold;
+.card.turn {
+	border: 2px solid red;
 }

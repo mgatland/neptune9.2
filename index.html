@@ -17,7 +17,7 @@ icon: neptune9/neptune9-icon.png
 </head>
 <body>
 	<div>
-		<div class="card" ng-repeat="creature in creatures" ng-controller="CardCtrl" ng-init="init($index)">
+		<div class="card" ng-class="{turn: isMyTurn()}" ng-repeat="creature in creatures" ng-controller="CardCtrl" ng-init="init($index)">
 			<div>{{creature.name}}</div>
 			<div>{{creature.hp}}</div>
 		</div>
