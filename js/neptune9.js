@@ -19,7 +19,7 @@ function Creature (options) {
 	this.hp = 10;
 	this.moves = normalMoves;
 	this.ai = function (gs) {
-		gs.useAction(this, 0, (this.num + 2) % 4);
+		return {move: 0, target: (this.num + 2) % 4};
 	};
 
 	for (var attrname in options) {
@@ -35,12 +35,11 @@ angular.module('neptune9', [])
   var gs = {};
 
   gs.turn = 0;
-
-  var noAi = function () {};
+  var moveIsUsed = false;
 
   gs.creatures = [];
-  gs.creatures[0] = new Creature({name:"Matthew", hp:10, ai: noAi});
-  gs.creatures[1] = new Creature({name:"Ålice", hp:20, ai: noAi});
+  gs.creatures[0] = new Creature({name:"Matthew", hp:10, ai: null});
+  gs.creatures[1] = new Creature({name:"Ålice", hp:20, ai: null});
   gs.creatures[2] = new Creature({name:"Someone", hp:30});
   gs.creatures[3] = new Creature({name:"Else", hp:40});
 
@@ -58,6 +57,8 @@ angular.module('neptune9', [])
   		console.log("Someone tried to act but it's not their turn.");
   		return;
   	}
+  	if (moveIsUsed) return;
+  	moveIsUsed = true;
   	var action = user.moves[actionNum];
   	var target = gs.creatures[targetNum];
   	console.log(user.name + " used " + action.name + " on " + target.name);
@@ -67,7 +68,12 @@ angular.module('neptune9', [])
 
   	gs.turn++;
   	if (gs.turn >= 4) gs.turn = 0;
-  	gs.creatures[gs.turn].ai(gs);
+  	moveIsUsed = false;
+  	var creature = gs.creatures[gs.turn];
+  	if (creature.ai != null) {
+  		var action = creature.ai(gs);
+  		gs.useAction(creature, action.move, action.target);
+  	}
   }
 
   return gs;
