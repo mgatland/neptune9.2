@@ -2,7 +2,8 @@
 
 var normalMoves = [];
 normalMoves.push({name:"Attack", act: function (user, target) {
-	target.hp -= 2;
+	target.hp -= 1 * user.iStr();
+	user.energy -= 3;
 }});
 normalMoves.push({name:"Recover", act: function (user, target) {
 	user.hp += 2;
@@ -15,8 +16,15 @@ normalMoves.push({name:"Charge", act: function (user, target) {
 }});
 
 function Creature (options) {
+	var c = this;
 	this.name = "Name";
+
 	this.hp = 10;
+	this.energy = 10;
+	this.strength = 10; //attack damage
+	this.speed = 10; //hit and dodge
+	this.focus = 10; //magic, resist magic
+
 	this.moves = normalMoves;
 	this.deadTime = 0;
 	this.ai = function (gs, num) {
@@ -26,6 +34,14 @@ function Creature (options) {
 	for (var attrname in options) {
 	 this[attrname] = options[attrname]; 
 	};
+	this.maxHp = this.hp;
+	this.maxEnergy = this.energy;
+
+	var energyModifier = function () { return c.energy / c.maxEnergy + 0.5};
+
+	this.iStr = function () { return c.strength * energyModifier()};
+	this.iSpd = function () { return c.speed * energyModifier()};
+	this.iFoc = function () { return c.focus * energyModifier()};
 }
 
 //angular code
