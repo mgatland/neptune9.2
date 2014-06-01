@@ -1,9 +1,10 @@
 //Game code
 
 var normalMoves = [];
-normalMoves.push({name:"Attack", act: function (user, target) {
+normalMoves.push({name:"Attack", act: function (user, target, fx, userNum, targetNum) {
 	target.hurt(user.iStr());
 	user.useEnergy(3);
+	fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:6, duration: 500});
 }});
 normalMoves.push({name:"Recover", act: function (user, target) {
 	user.hp += 2;
@@ -100,24 +101,31 @@ angular.module('neptune9', [])
 
   	if (creature.ai != null) {
   		var action = creature.ai(gs, gs.turn);
-  		gs.useAction(creature, action.move, action.target);
+  		gs.useAction(gs.cards[gs.turn], action.move, action.target);
   	}
   	//Otherwise, wait for player input.
   	$rootScope.$apply();
   }
 
-  gs.useAction = function(user, actionNum, targetNum) {
-  	if (gs.cards[gs.turn].creature !== user) {
+  gs.useAction = function(userCard, actionNum, targetNum) {
+  	if (gs.cards[gs.turn] !== userCard) {
   		console.log("Someone tried to act but it's not their turn.");
   		return;
   	}
   	if (moveIsUsed) return;
   	moveIsUsed = true;
-  	var action = user.moves[actionNum];
+  	var attacker = userCard.creature;
+  	var action = attacker.moves[actionNum];
   	var target = gs.cards[targetNum].creature;
-  	console.log(user.name + " used " + action.name + " on " + target.name);
-  	action.act(user, target);
+  	console.log(attacker.name + " used " + action.name + " on " + target.name);
+  	var fx = [];
+  	action.act(attacker, target, fx, userCard.num, targetNum);
 
+  	fx.forEach(function (e) {
+  		var from = coordsForCardNum(e.from);
+  		var to = coordsForCardNum(e.to);
+  		drawLine(from, to, e.color, e.thickness, e.duration);
+  	});
 		window.setTimeout(endTurn, 500, gs);
   }
 
@@ -183,7 +191,7 @@ angular.module('neptune9', [])
 				$scope.selectedAction--;
 				if ($scope.selectedAction < 0 ) $scope.selectedAction = actions.length - 1;
 			} else if (key === "use") {
-				gameService.useAction($scope.player.card.creature, $scope.selectedAction, $scope.targetNum);
+				gameService.useAction($scope.player.card, $scope.selectedAction, $scope.targetNum);
 			}
 			$scope.targetName = gameService.cards[$scope.targetNum].creature.name;	
 		});

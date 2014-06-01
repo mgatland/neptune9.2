@@ -27,13 +27,15 @@ body {
 	height: 670px;
 	border: 2px solid orange;
 	border-radius: 5px;
+	background-color: orange;
 }
 
 .cards {
 	width: 600px;
 	height: 400px;
 	border: 2px solid orange;
-	border-radius: 5px;	
+	border-radius: 5px;
+	background-color: black;
 }
 
 .controls {
@@ -41,7 +43,7 @@ body {
 	height: 250px;
 	border: 2px solid orange;
 	border-radius: 5px;
-
+	background-color: black;
 }
 
 .controlpanel {
@@ -74,4 +76,15 @@ body {
 
 .turn {
 	border: 2px solid red;
+}
+
+.lines {
+	pointer-events: none;
+}
+
+.line {
+	padding:0px;
+	margin:0px;
+	line-height:1px;
+	position:absolute;
 }
