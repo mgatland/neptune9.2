@@ -18,12 +18,15 @@ body {
 	background-color: black;
 	color: orange;
 	font-family: "Orbitron";
+	font-size: 16px;
+	line-height: 19px;
 }
 
 .controls {
 	width: 200px;
 	height: 200px;
 	font-size: 24px;
+	line-height: 27px;
 	padding: 20px;
 	display:inline-block;
 	border: 2px solid black;
