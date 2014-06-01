@@ -152,6 +152,10 @@ angular.module('neptune9', [])
 		keyboardService.setActions(num, keyCallback);
 	}
 
+	$scope.isMyTurn = function () {
+		return gameService.turn === $scope.num;
+	}
+
 })
 ;
 

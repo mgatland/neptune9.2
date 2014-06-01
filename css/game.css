@@ -21,6 +21,6 @@
 	padding: 20px;
 }
 
-.card.turn {
+.turn {
 	border: 2px solid red;
 }
