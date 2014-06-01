@@ -17,17 +17,25 @@ icon: neptune9/neptune9-icon.png
 	{% include analytics.html %}
 </head>
 <body>
-	<div>
-		<div class="card" ng-class="{turn: isMyTurn()}" ng-repeat="card in cards" ng-controller="CardCtrl" ng-init="init($index)">
-			<div>{{card.creature.name}}</div>
-			<div>Health: {{card.creature.hp}}/{{card.creature.maxHp}}</div>
-			<div>Energy: {{card.creature.energy}}/{{card.creature.maxEnergy}}</div>
+	<div class="gamescreen">
+		<div class="cards">
+			<div class="card" ng-class="{turn: isMyTurn()}" ng-repeat="card in cards" ng-controller="CardCtrl" ng-init="init($index)">
+				<div>{{card.creature.name}}</div>
+				<div>Health: {{card.creature.hp}}/{{card.creature.maxHp}}</div>
+				<div>Energy: {{card.creature.energy}}/{{card.creature.maxEnergy}}</div>
+			</div>
 		</div>
-		<div class="controls" ng-repeat="player in players" ng-controller="ControlCtrl" ng-class="{turn: isMyTurn()}" ng-init="init($index)">
-			<div 
-			ng-repeat="action in player.card.creature.moves" 
-			ng-class="{selected: $index==selectedAction}">{{action.name}}</div>
-			<div>Target: {{targetName}}</div>
+		<div class="controls">
+			<div class="controlpanel" 
+			ng-repeat="player in players" 
+			ng-controller="ControlCtrl"
+			ng-class="{turn: isMyTurn()}"
+			ng-init="init($index)">
+				<div 
+				ng-repeat="action in player.card.creature.moves" 
+				ng-class="{selected: $index==selectedAction}">{{action.name}}</div>
+				<div>Target: {{targetName}}</div>
+			</div>
 		</div>
 	</div>
 </body>
