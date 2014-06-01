@@ -23,7 +23,9 @@ icon: neptune9/neptune9-icon.png
 			<div class="card" ng-class="{turn: isMyTurn()}" ng-repeat="card in cards" ng-controller="CardCtrl" ng-init="init($index)">
 				<div>{{card.creature.name}}</div>
 				<div>Health: {{card.creature.hp}}/{{card.creature.maxHp}}</div>
-				<div>Energy: {{card.creature.energy}}/{{card.creature.maxEnergy}}</div>
+				<div>Energy: {{card.creature.energy}}/{{card.creature.maxEnergy}}
+				<div ng-repeat="text in card.creature.texts">{{text}}</div>
+				</div>
 			</div>
 		</div>
 		<div class="controls">

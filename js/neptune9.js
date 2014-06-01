@@ -4,15 +4,19 @@ var normalMoves = [];
 normalMoves.push({name:"Attack", act: function (user, target, fx, userNum, targetNum) {
 	target.hurt(user.iStr());
 	user.useEnergy(3);
+	target.texts.push("Shot by " + user.name + "!");
 	fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:6, duration: 500});
 }});
 normalMoves.push({name:"Recover", act: function (user, target) {
 	user.hp += 2;
+	user.texts.push("Healed");
 }});
 normalMoves.push({name:"Protect", act: function (user, target) {
+	user.texts.push("Protecting…");
 	user.hp += 1;
 }});
 normalMoves.push({name:"Charge", act: function (user, target) {
+	user.texts.push("Charged!");
 	user.name += "!";
 }});
 
@@ -25,6 +29,8 @@ function Creature (options) {
 	this.strength = 10; //attack damage
 	this.speed = 10; //hit and dodge
 	this.focus = 10; //magic, resist magic
+
+	this.texts = [];
 
 	this.moves = normalMoves;
 	this.deadTime = 0;
@@ -87,6 +93,8 @@ angular.module('neptune9', [])
   	if (gs.turn >= 4) gs.turn = 0;
   	moveIsUsed = false;
   	var creature = gs.cards[gs.turn].creature;
+
+  	creature.texts.length = 0; //clear messages
 
   	if (creature.hp <= 0) {
   		creature.deadTime++;
