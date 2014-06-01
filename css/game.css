@@ -1,3 +1,25 @@
+/*
+https://www.google.com/fonts/specimen/Orbitron
+https://www.google.com/fonts/specimen/Play
+*/
+
+@font-face {
+  font-family: 'Orbitron';
+  src: url('fonts/Orbitron-Medium.ttf');
+}
+
+@font-face {
+  font-family: 'Orbitron';
+  src: url('fonts/Orbitron-Black.ttf');
+  font-weight: bold;
+}
+
+body {
+	background-color: black;
+	color: orange;
+	font-family: "Orbitron";
+}
+
 .controls {
 	width: 200px;
 	height: 200px;
@@ -8,6 +30,7 @@
 }
 
 .selected {
+	color: #af7;
 	font-weight: bold;
 }
 
