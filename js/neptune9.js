@@ -2,8 +2,8 @@
 
 var normalMoves = [];
 normalMoves.push({name:"Attack", act: function (user, target) {
-	target.hp -= 1 * user.iStr();
-	user.energy -= 3;
+	target.hurt(user.iStr());
+	user.useEnergy(3);
 }});
 normalMoves.push({name:"Recover", act: function (user, target) {
 	user.hp += 2;
@@ -42,6 +42,14 @@ function Creature (options) {
 	this.iStr = function () { return c.strength * energyModifier()};
 	this.iSpd = function () { return c.speed * energyModifier()};
 	this.iFoc = function () { return c.focus * energyModifier()};
+
+	this.hurt = function (damage) {
+		this.hp -= damage;
+	}
+
+	this.useEnergy = function (amount) {
+		this.energy -= amount;
+	}
 }
 
 //angular code
