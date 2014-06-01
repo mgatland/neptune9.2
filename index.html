@@ -17,13 +17,13 @@ icon: neptune9/neptune9-icon.png
 </head>
 <body>
 	<div>
-		<div class="card" ng-class="{turn: isMyTurn()}" ng-repeat="creature in creatures" ng-controller="CardCtrl" ng-init="init($index)">
-			<div>{{creature.name}}</div>
-			<div>{{creature.hp}}</div>
+		<div class="card" ng-class="{turn: isMyTurn()}" ng-repeat="card in cards" ng-controller="CardCtrl" ng-init="init($index)">
+			<div>{{card.creature.name}}</div>
+			<div>{{card.creature.hp}}</div>
 		</div>
 		<div class="controls" ng-repeat="player in players" ng-controller="ControlCtrl" ng-class="{turn: isMyTurn()}" ng-init="init($index)">
 			<div 
-			ng-repeat="action in player.creature.moves" 
+			ng-repeat="action in player.card.creature.moves" 
 			ng-class="{selected: $index==selectedAction}">{{action.name}}</div>
 			<div>Target: {{targetName}}</div>
 		</div>

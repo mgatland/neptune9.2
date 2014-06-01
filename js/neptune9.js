@@ -2,10 +2,10 @@
 
 var normalMoves = [];
 normalMoves.push({name:"Attack", act: function (user, target) {
-	target.hp -= 1;
+	target.hp -= 2;
 }});
 normalMoves.push({name:"Recover", act: function (user, target) {
-	user.hp += 1;
+	user.hp += 2;
 }});
 normalMoves.push({name:"Protect", act: function (user, target) {
 	user.hp += 1;
@@ -18,8 +18,9 @@ function Creature (options) {
 	this.name = "Name";
 	this.hp = 10;
 	this.moves = normalMoves;
-	this.ai = function (gs) {
-		return {move: 0, target: (this.num + 2) % 4};
+	this.deadTime = 0;
+	this.ai = function (gs, num) {
+		return {move: 0, target: (num + 2) % 4};
 	};
 
 	for (var attrname in options) {
@@ -37,46 +38,68 @@ angular.module('neptune9', [])
   gs.turn = 0;
   var moveIsUsed = false;
 
-  gs.creatures = [];
-  gs.creatures[0] = new Creature({name:"Matthew", hp:10, ai: null});
-  gs.creatures[1] = new Creature({name:"Ålice", hp:20, ai: null});
-  gs.creatures[2] = new Creature({name:"Someone", hp:30});
-  gs.creatures[3] = new Creature({name:"Else", hp:40});
+  gs.cards = [{}, {}, {}, {}];
+  gs.cards[0].creature = new Creature({name:"Matthew", hp:10, ai: null});
+  gs.cards[1].creature = new Creature({name:"Ålice", hp:10, ai: null});
+  gs.cards[2].creature = new Creature({name:"Someone", hp:3});
+  gs.cards[3].creature = new Creature({name:"Else", hp:4});
 
   gs.players = [];
-  gs.players[0] = {creature: gs.creatures[0]};
-  gs.players[1] = {creature: gs.creatures[1]};
+  gs.players[0] = {card: gs.cards[0]};
+  gs.players[1] = {card: gs.cards[1]};
 
-  //let every creature know its index.
+  //let every card know its index.
   for (var i = 0; i < 4; i++) {
-  	gs.creatures[i].num = i;
+  	gs.cards[i].num = i;
+  }
+
+  var spawnCreature = function(gs, num) {
+  	gs.cards[num].creature = new Creature({name:"Dingbat", hp:3, num:num});
   }
 
   var endTurn = function(gs) {
   	gs.turn++;
   	if (gs.turn >= 4) gs.turn = 0;
   	moveIsUsed = false;
-  	var creature = gs.creatures[gs.turn];
+  	var creature = gs.cards[gs.turn].creature;
+
+  	if (creature.hp <= 0) {
+  		creature.deadTime++;
+  		if (creature.deadTime == 3) {
+  			//create new creature
+  			spawnCreature(gs, gs.turn);
+  		}
+  		gs.skipTurn();
+  		$rootScope.$apply();
+  		return;
+  	}
+
   	if (creature.ai != null) {
-  		var action = creature.ai(gs);
+  		var action = creature.ai(gs, gs.turn);
   		gs.useAction(creature, action.move, action.target);
   	}
+  	//Otherwise, wait for player input.
   	$rootScope.$apply();
   }
 
   gs.useAction = function(user, actionNum, targetNum) {
-  	if (gs.creatures[gs.turn] !== user) {
+  	if (gs.cards[gs.turn].creature !== user) {
   		console.log("Someone tried to act but it's not their turn.");
   		return;
   	}
   	if (moveIsUsed) return;
   	moveIsUsed = true;
   	var action = user.moves[actionNum];
-  	var target = gs.creatures[targetNum];
+  	var target = gs.cards[targetNum].creature;
   	console.log(user.name + " used " + action.name + " on " + target.name);
   	action.act(user, target);
 
-		window.setTimeout(endTurn, 1000, gs);
+		window.setTimeout(endTurn, 500, gs);
+  }
+
+  gs.skipTurn = function() {
+  	moveIsUsed = true;
+  	window.setTimeout(endTurn, 400, gs);
   }
 
   return gs;
@@ -88,21 +111,19 @@ angular.module('neptune9', [])
 })
 
 .run(function ($rootScope, gameService) {
-	$rootScope.creatures = gameService.creatures;
+	$rootScope.cards = gameService.cards;
 	$rootScope.players = gameService.players;
 })
 
 .controller('CardCtrl', function($scope, gameService) {
-	$scope.num = 0;
-	$scope.creature = null;
+	$scope.card = null;
 
 	$scope.init = function (num) {
-		$scope.num = num;
-		$scope.creature = gameService.creatures[$scope.num];
+		$scope.card = gameService.cards[num];
 	}
 
 	$scope.isMyTurn = function () {
-		return gameService.turn === $scope.num;
+		return gameService.turn === $scope.card.num;
 	}
 
 })
@@ -126,7 +147,7 @@ angular.module('neptune9', [])
 	var keyCallback = function (key) {
 		console.log("Player " + $scope.num + " did " + key);
 		$scope.$apply(function () { //called externally, so we must apply
-			var actions = $scope.player.creature.moves;
+			var actions = $scope.player.card.creature.moves;
 			if (key === "left") {
 				$scope.targetNum = 2;
 			} else if (key === "right") {
@@ -138,16 +159,16 @@ angular.module('neptune9', [])
 				$scope.selectedAction--;
 				if ($scope.selectedAction < 0 ) $scope.selectedAction = actions.length - 1;
 			} else if (key === "use") {
-				gameService.useAction($scope.player.creature, $scope.selectedAction, $scope.targetNum);
+				gameService.useAction($scope.player.card.creature, $scope.selectedAction, $scope.targetNum);
 			}
-			$scope.targetName = gameService.creatures[$scope.targetNum].name;	
+			$scope.targetName = gameService.cards[$scope.targetNum].creature.name;	
 		});
 	}
 
 	$scope.init = function (num) {
 		$scope.num = num;
 		$scope.targetNum = num + 2;
-		$scope.targetName = gameService.creatures[$scope.targetNum].name;	
+		$scope.targetName = gameService.cards[$scope.targetNum].creature.name;	
 		$scope.player = gameService.players[num];
 		keyboardService.setActions(num, keyCallback);
 	}
