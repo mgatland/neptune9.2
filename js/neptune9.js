@@ -1,19 +1,31 @@
 //Game code
 
 var normalMoves = [];
-normalMoves.push({name:"Attack", act: function (user, target, fx, userNum, targetNum) {
-	target.hurt(user.iStr());
+normalMoves.push({name:"Shoot", act: function (user, target, fx, userNum, targetNum) {
+	var hitChance = 0.5 + 0.5 * (user.iSpd() / (user.iSpd() + target.iSpd()));
+	if (Math.random() < hitChance) {
+		target.hurt(Math.max(user.iStr() / 8, 1));
+		target.texts.push("Shot by " + user.name + "!");
+		fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:6, duration: 500});
+	} else {
+		user.texts.push("Miss!");
+	}
 	user.useEnergy(3);
-	target.texts.push("Shot by " + user.name + "!");
-	fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:6, duration: 500});
 }});
-normalMoves.push({name:"Recover", act: function (user, target) {
-	user.hp += 2;
-	user.texts.push("Healed");
+normalMoves.push({name:"Rest", act: function (user, target) {
+	user.texts.push("Rested");
 }});
-normalMoves.push({name:"Protect", act: function (user, target) {
-	user.texts.push("Protecting…");
-	user.hp += 1;
+normalMoves.push({name:"Whack!", act: function (user, target, fx, userNum, targetNum) {
+	var hitChance = 1 * (user.iSpd() * 3 / (user.iSpd() * 3 + target.iSpd()));
+	if (Math.random() < hitChance) {
+		target.hurt(Math.max(user.iStr() / 4, 1));
+		target.useEnergy(Math.max(user.iStr() / 8, 1));
+		target.texts.push("Whacked by " + user.name + "!");
+		fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:12, duration: 800});
+	} else {
+		user.texts.push("Miss!");
+	}
+	user.useEnergy(8);
 }});
 normalMoves.push({name:"Charge", act: function (user, target) {
 	user.texts.push("Charged!");
@@ -51,11 +63,21 @@ function Creature (options) {
 	this.iFoc = function () { return c.focus * energyModifier()};
 
 	this.hurt = function (damage) {
+		damage = Math.floor(damage);
 		this.hp -= damage;
+		if (this.hp < 0) this.hp = 0;
 	}
 
 	this.useEnergy = function (amount) {
+		amount = Math.floor(amount);
 		this.energy -= amount;
+		if (this.energy < 0) this.energy = 0;
+	}
+
+	this.recoverEnergy = function (amount) {
+		amount = Math.floor(amount);
+		this.energy += amount;
+		if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
 	}
 }
 
@@ -105,6 +127,8 @@ angular.module('neptune9', [])
   		gs.skipTurn();
   		$rootScope.$apply();
   		return;
+  	} else {
+  		creature.recoverEnergy(creature.maxEnergy / 4);
   	}
 
   	if (creature.ai != null) {

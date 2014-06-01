@@ -24,7 +24,7 @@ icon: neptune9/neptune9-icon.png
 				<div>{{card.creature.name}}</div>
 				<div>Health: {{card.creature.hp}}/{{card.creature.maxHp}}</div>
 				<div>Energy: {{card.creature.energy}}/{{card.creature.maxEnergy}}
-				<div ng-repeat="text in card.creature.texts">{{text}}</div>
+				<div class="msg" ng-repeat="text in card.creature.texts">{{text}}</div>
 				</div>
 			</div>
 		</div>
