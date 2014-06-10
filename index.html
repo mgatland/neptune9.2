@@ -13,6 +13,7 @@ icon: neptune9/neptune9-icon.png
 	<!--<link href="//fonts.googleapis.com/css?family=Orbitron:400,500,700,900" rel="stylesheet" type="text/css">-->
 	<link rel="stylesheet" href="css/game.css">
 	<script data-main="js/game" src="js/angular.js"></script>
+	<script data-main="js/game" src="js/angular-animate.js"></script>
 	<script data-main="js/game" src="js/lines.js"></script>
 	<script data-main="js/game" src="js/neptune9.js"></script>
 	{% include analytics.html %}
@@ -23,13 +24,17 @@ icon: neptune9/neptune9-icon.png
 			<div class="card" ng-class="{turn: isMyTurn()}" ng-repeat="card in cards" ng-controller="CardCtrl" ng-init="init($index)">
 				<div>{{card.creature.name}}</div>
 				<div class="portrait">
-					<img class="faceimg" src="art/spy.png">
+					<img class="inportrait" src="art/spy.png">
 					<div class="damage" style="height:{{64-card.creature.hp*64/card.creature.maxHp}}"></div>
+					<img class="inportrait" src="art/dead.png" ng-if="card.creature.hp <= 0">
 				</div>
 				<div class="energybar">
 					<div class="energybarinside" style="height:{{card.creature.energy*64/card.creature.maxEnergy}}"></div>
 				</div>
 				<div class="msg" ng-repeat="text in card.creature.texts">{{text}}</div>
+				<img class="cardfx" 
+					ng-repeat="fx in card.creature.fx"
+					src="art/{{fx.sprite}}">
 			</div>
 		</div>
 		<div class="controls">

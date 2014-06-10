@@ -1,18 +1,30 @@
 //Game code
 
+function addFx(character, fxName) {
+	var fx = {sprite: fxName + ".png"};
+	character.fx.push(fx);
+	setTimeout(function () {
+		var index = character.fx.indexOf(fx);
+		character.fx.splice(index, 1);
+	}, 400);
+}
+
 var normalMoves = [];
 normalMoves.push({name:"Shoot", act: function (user, target, fx, userNum, targetNum) {
 	var hitChance = 0.5 + 0.5 * (user.iSpd() / (user.iSpd() + target.iSpd()));
 	if (Math.random() < hitChance) {
 		target.hurt(Math.max(user.iStr() / 8, 1));
 		target.texts.push("Shot by " + user.name + "!");
+		addFx(target, "shot");
 		fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:6, duration: 500});
 	} else {
 		user.texts.push("Miss!");
+		addFx(target, "miss");
 	}
 	user.useEnergy(3);
 }});
 normalMoves.push({name:"Rest", act: function (user, target) {
+	addFx(user, "rest");
 	user.texts.push("Rested");
 }});
 normalMoves.push({name:"Whack!", act: function (user, target, fx, userNum, targetNum) {
@@ -21,8 +33,10 @@ normalMoves.push({name:"Whack!", act: function (user, target, fx, userNum, targe
 		target.hurt(Math.max(user.iStr() / 4, 1));
 		target.useEnergy(Math.max(user.iStr() / 8, 1));
 		target.texts.push("Whacked by " + user.name + "!");
+		addFx(target, "whack");
 		fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:12, duration: 800});
 	} else {
+		addFx(target,"miss");
 		user.texts.push("Miss!");
 	}
 	user.useEnergy(8);
@@ -43,6 +57,7 @@ function Creature (options) {
 	this.focus = 10; //magic, resist magic
 
 	this.texts = [];
+	this.fx = [];
 
 	this.moves = normalMoves;
 	this.deadTime = 0;
@@ -83,7 +98,7 @@ function Creature (options) {
 
 //angular code
 
-angular.module('neptune9', [])
+angular.module('neptune9', ['ngAnimate'])
 
 .factory('gameService', function($rootScope) {
   var gs = {};

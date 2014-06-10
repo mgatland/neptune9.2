@@ -64,6 +64,7 @@ body {
 }
 
 .card {
+	position: relative; /* for contents */
 	width: 200px;
 	height: 120px;
 	border: 2px solid orange;
@@ -72,6 +73,15 @@ body {
 	margin: 20px;
 	padding: 20px;
 	vertical-align:top
+}
+
+.cardfx {
+	position: absolute;
+	width: 240px;
+	height: 160px;
+	top: 0;
+	left: 0;
+	opacity: 1;
 }
 
 .msg {
@@ -105,7 +115,7 @@ body {
 	display: inline-block;
 }
 
-.faceimg {
+.inportrait {
 	width: 64px;
 	position: absolute;
 }
@@ -133,4 +143,25 @@ body {
 	background-color: #af7;
 	position: absolute;
 	bottom: 0;
+}
+
+/* Animations */
+
+.cardfx.ng-enter {
+  -webkit-transition:0.032s linear all;
+  transition:0.032s linear all;
+}
+
+.cardfx.ng-leave {
+  -webkit-transition:0.4s linear all;
+  transition:0.4s linear all;
+}
+
+.cardfx.ng-enter,
+.cardfx.ng-leave.ng-leave-active {
+	opacity:0;
+}
+.cardfx.ng-leave,
+.cardfx.ng-enter.ng-enter-active {
+  opacity:1;
 }
