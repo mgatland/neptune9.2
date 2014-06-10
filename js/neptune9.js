@@ -169,12 +169,12 @@ angular.module('neptune9', ['ngAnimate'])
   		var to = coordsForCardNum(e.to);
   		drawLine(from, to, e.color, e.thickness, e.duration);
   	});
-		window.setTimeout(endTurn, 500, gs);
+		window.setTimeout(endTurn, 800, gs);
   }
 
   gs.skipTurn = function() {
   	moveIsUsed = true;
-  	window.setTimeout(endTurn, 400, gs);
+  	window.setTimeout(endTurn, 600, gs);
   }
 
   return gs;
