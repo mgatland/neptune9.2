@@ -22,10 +22,14 @@ icon: neptune9/neptune9-icon.png
 		<div class="cards">
 			<div class="card" ng-class="{turn: isMyTurn()}" ng-repeat="card in cards" ng-controller="CardCtrl" ng-init="init($index)">
 				<div>{{card.creature.name}}</div>
-				<div>Health: {{card.creature.hp}}/{{card.creature.maxHp}}</div>
-				<div>Energy: {{card.creature.energy}}/{{card.creature.maxEnergy}}
-				<div class="msg" ng-repeat="text in card.creature.texts">{{text}}</div>
+				<div class="portrait">
+					<img class="faceimg" src="art/spy.png">
+					<div class="damage" style="height:{{64-card.creature.hp*64/card.creature.maxHp}}"></div>
 				</div>
+				<div class="energybar">
+					<div class="energybarinside" style="height:{{card.creature.energy*64/card.creature.maxEnergy}}"></div>
+				</div>
+				<div class="msg" ng-repeat="text in card.creature.texts">{{text}}</div>
 			</div>
 		</div>
 		<div class="controls">

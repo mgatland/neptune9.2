@@ -93,3 +93,44 @@ body {
 	line-height:1px;
 	position:absolute;
 }
+
+/* Portrait */
+
+.portrait {
+	width: 64px;
+	height: 64px;
+	border: 2px solid orange;
+	position: relative; /* Allow contents to be relatively positioned */
+	margin-right: 8px;
+	display: inline-block;
+}
+
+.faceimg {
+	width: 64px;
+	position: absolute;
+}
+
+.damage {
+	width: 100%;
+	background-color: rgba(255, 0, 0, 0.6);
+	position: absolute;
+	bottom: 0;
+}
+
+/* Energy Bar */
+
+.energybar {
+	width: 8px;
+	height: 64px;
+	position: relative; /* Allow contents to be relatively positioned */
+	border: 2px solid orange;
+	background-color: black;
+	display: inline-block;
+}
+
+.energybarinside {
+	width: 100%;
+	background-color: #af7;
+	position: absolute;
+	bottom: 0;
+}
