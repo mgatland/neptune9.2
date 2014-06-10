@@ -263,6 +263,7 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 
 	$scope.useAction = function (index) {
+		$scope.selectedAction = index;
 		if ($scope.isMyTurn()) {
 			gameService.useAction($scope.player.card, index, $scope.player.targetNum);
 		}
