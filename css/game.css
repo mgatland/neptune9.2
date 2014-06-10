@@ -58,12 +58,17 @@ body {
 	vertical-align:top;
 }
 
+.actionbutton {
+	cursor: pointer;
+}
+
 .selected {
 	color: #af7;
 	font-weight: bold;
 }
 
 .card {
+	cursor: pointer;
 	position: relative; /* for contents */
 	width: 200px;
 	height: 120px;

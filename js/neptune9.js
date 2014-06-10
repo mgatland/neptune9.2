@@ -202,6 +202,12 @@ angular.module('neptune9', ['ngAnimate'])
 		return gameService.turn === $scope.card.num;
 	}
 
+	$scope.select = function (index) {
+		var player = gameService.players[gameService.turn];
+		if (player === undefined) return;
+		player.targetNum = index;
+	}
+
 	$scope.isActiveTarget = function () {
 		var activePlayer = gameService.players[gameService.turn];
 		if (activePlayer === undefined) {
@@ -256,6 +262,11 @@ angular.module('neptune9', ['ngAnimate'])
 		return gameService.turn === $scope.num;
 	}
 
+	$scope.useAction = function (index) {
+		if ($scope.isMyTurn()) {
+			gameService.useAction($scope.player.card, index, $scope.player.targetNum);
+		}
+	}
 })
 ;
 
