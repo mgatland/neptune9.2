@@ -121,9 +121,10 @@ angular.module('neptune9', ['ngAnimate'])
   	gs.cards[num].creature = new Creature({name:"Dingbat", hp:3, num:num});
   }
 
+  var nextTurnMap = {0:2, 2:1, 1:3, 3:0};
+
   var endTurn = function(gs) {
-  	gs.turn++;
-  	if (gs.turn >= 4) gs.turn = 0;
+  	gs.turn = nextTurnMap[gs.turn];
   	moveIsUsed = false;
   	var creature = gs.cards[gs.turn].creature;
 
