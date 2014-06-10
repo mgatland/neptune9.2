@@ -109,8 +109,8 @@ angular.module('neptune9', ['ngAnimate'])
   gs.cards[3].creature = new Creature({name:"Else", hp:4});
 
   gs.players = [];
-  gs.players[0] = {card: gs.cards[0]};
-  gs.players[1] = {card: gs.cards[1]};
+  gs.players[0] = {card: gs.cards[0], targetNum: 2};
+  gs.players[1] = {card: gs.cards[1], targetNum: 3};
 
   //let every card know its index.
   for (var i = 0; i < 4; i++) {
@@ -201,6 +201,14 @@ angular.module('neptune9', ['ngAnimate'])
 		return gameService.turn === $scope.card.num;
 	}
 
+	$scope.isActiveTarget = function () {
+		var activePlayer = gameService.players[gameService.turn];
+		if (activePlayer === undefined) {
+			return false;
+		}
+		return activePlayer.targetNum === $scope.card.num;
+	}
+
 })
 
 //This lets me inject html like the arrow key codes
@@ -215,8 +223,6 @@ angular.module('neptune9', ['ngAnimate'])
 //	keys[1] = ['&#8593;', '&#8595;', '&#8592;', '&#8594;'];
 	$scope.num = 0;
 	$scope.player = null;
-	$scope.targetNum = 0;
-	$scope.targetName = "--";
 	$scope.selectedAction = 0;
 
 	var keyCallback = function (key) {
@@ -224,9 +230,9 @@ angular.module('neptune9', ['ngAnimate'])
 		$scope.$apply(function () { //called externally, so we must apply
 			var actions = $scope.player.card.creature.moves;
 			if (key === "left") {
-				$scope.targetNum = 2;
+				$scope.player.targetNum = 2;
 			} else if (key === "right") {
-				$scope.targetNum = 3;
+				$scope.player.targetNum = 3;
 			} else if (key === "down") {
 				$scope.selectedAction++;
 				if ($scope.selectedAction >= actions.length) $scope.selectedAction = 0;
@@ -234,16 +240,13 @@ angular.module('neptune9', ['ngAnimate'])
 				$scope.selectedAction--;
 				if ($scope.selectedAction < 0 ) $scope.selectedAction = actions.length - 1;
 			} else if (key === "use") {
-				gameService.useAction($scope.player.card, $scope.selectedAction, $scope.targetNum);
+				gameService.useAction($scope.player.card, $scope.selectedAction, $scope.player.targetNum);
 			}
-			$scope.targetName = gameService.cards[$scope.targetNum].creature.name;	
 		});
 	}
 
 	$scope.init = function (num) {
 		$scope.num = num;
-		$scope.targetNum = num + 2;
-		$scope.targetName = gameService.cards[$scope.targetNum].creature.name;	
 		$scope.player = gameService.players[num];
 		keyboardService.setActions(num, keyCallback);
 	}
