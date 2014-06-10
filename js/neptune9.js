@@ -14,11 +14,9 @@ normalMoves.push({name:"Shoot", act: function (user, target, fx, userNum, target
 	var hitChance = 0.5 + 0.5 * (user.iSpd() / (user.iSpd() + target.iSpd()));
 	if (Math.random() < hitChance) {
 		target.hurt(Math.max(user.iStr() / 8, 1));
-		target.texts.push("Shot by " + user.name + "!");
 		addFx(target, "shot");
 		fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:6, duration: 500});
 	} else {
-		user.texts.push("Miss!");
 		addFx(target, "miss");
 	}
 	user.useEnergy(3);
@@ -32,12 +30,10 @@ normalMoves.push({name:"Whack!", act: function (user, target, fx, userNum, targe
 	if (Math.random() < hitChance) {
 		target.hurt(Math.max(user.iStr() / 4, 1));
 		target.useEnergy(Math.max(user.iStr() / 8, 1));
-		target.texts.push("Whacked by " + user.name + "!");
 		addFx(target, "whack");
 		fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:12, duration: 800});
 	} else {
 		addFx(target,"miss");
-		user.texts.push("Miss!");
 	}
 	user.useEnergy(8);
 }});
