@@ -1,6 +1,5 @@
 todo:
 
-[ ] mana potions
 [ ] heal move
 [ ] energise move
 [ ] different enemies with portraits
@@ -12,12 +11,14 @@ todo:
 [ ] attack sounds
 [ ] recolor images to fit the color scheme?
 [ ] put static over whole screen or just images
+[ ] more Star Trek style UI
 
 2014-06-11
 
 [x] show % to hit on moves
 [x] health potions
 [x] kills give you potions
+[x] energy potions
 
 2014-06-10
 
