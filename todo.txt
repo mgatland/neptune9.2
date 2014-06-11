@@ -1,8 +1,9 @@
 todo:
 
+[ ] different enemies with portraits
+[ ] experience and levelling
 [ ] heal move
 [ ] energise move
-[ ] different enemies with portraits
 
 ----
 

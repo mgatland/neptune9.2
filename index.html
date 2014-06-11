@@ -30,7 +30,7 @@ icon: neptune9/neptune9-icon.png
 			ng-init="init($index)">
 				<div>{{card.creature.name}}</div>
 				<div class="portrait">
-					<img class="inportrait" src="art/spy.png">
+					<img class="inportrait" src="art/{{card.creature.img}}">
 					<div class="damage" style="height:{{64-card.creature.hp*64/card.creature.maxHp}}"></div>
 					<img class="inportrait" src="art/dead.png" ng-if="card.creature.hp <= 0">
 				</div>

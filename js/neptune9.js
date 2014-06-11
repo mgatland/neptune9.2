@@ -9,10 +9,10 @@ angular.module('neptune9', ['ngAnimate'])
   var moveIsUsed = false;
 
   gs.cards = [{}, {}, {}, {}];
-  gs.cards[0].creature = new Creature({name:"Matthew", hp:10, ai: null, team: "good"});
-  gs.cards[1].creature = new Creature({name:"Ålice", hp:10, ai: null, team: "good"});
-  gs.cards[2].creature = new Creature({name:"Someone", hp:3, speed: 5});
-  gs.cards[3].creature = new Creature({name:"Else", hp:4, speed: 12});
+  gs.cards[0].creature = new Creature({name:"Kathee", img:"spy.png", hp:10, ai: null, team: "good"});
+  gs.cards[1].creature = new Creature({name:"Imogen", img:"missionary.png", hp:10, ai: null, team: "good"});
+  gs.cards[2].creature = new Creature({name:"Weewit", img:"weewit.png", hp:3, speed: 5});
+  gs.cards[3].creature = new Creature({name:"Gobnit", img:"gobnit.png", hp:4, speed: 12});
 
   gs.players = [];
   gs.players[0] = new Player(gs.cards, {card: gs.cards[0], targetNum: 2});
@@ -24,7 +24,7 @@ angular.module('neptune9', ['ngAnimate'])
   }
 
   var spawnCreature = function(gs, num) {
-  	gs.cards[num].creature = new Creature({name:"Dingbat", hp:3, num:num});
+  	gs.cards[num].creature = new Creature({name:"Dingbat", img:"weewit.png", hp:3, num:num});
   }
 
   var nextTurnMap = {0:2, 2:1, 1:3, 3:0};
