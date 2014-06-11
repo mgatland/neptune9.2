@@ -67,7 +67,6 @@ angular.module('neptune9', ['ngAnimate'])
   	var attacker = userCard.creature;
   	var action = attacker.moves[actionNum];
   	var target = gs.cards[targetNum].creature;
-    target = action.fixTarget(attacker, target);
     var wasAlive = target.isAlive();
   	console.log(attacker.name + " used " + action.name + " on " + target.name);
   	var fx = [];

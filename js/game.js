@@ -10,20 +10,30 @@ function addFx(character, fxName) {
 }
 
 function Move(options) {
-	for (var attrname in options) {
-	 this[attrname] = options[attrname]; 
-	};
+	//configurable parts
+	this.name = options.name;
+	var bonusToHit = options.bonusToHit;
+	var action = options.act;
+	var validTargets = options.validTargets;
+
 	this.hitChance = function(user, target) {
-		var chance = this.bonusToHit + (1 - this.bonusToHit) * (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
+		var chance = bonusToHit + (1 - bonusToHit) * (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
 		return Math.min(chance, 1);
 	}
-	this.fixTarget = function (user, target) {
-		if (this.validTargets === "friends") {
+
+	var fixTarget = function (user, target) {
+		if (validTargets === "friends") {
 			if (target.team !== user.team) {
 				return user;
 			}
 		}
 		return target;
+	}
+
+	this.act = function (user, target, fx, userNum, targetNum) {
+		target = fixTarget(user, target);
+		var chance = this.hitChance(user, target);
+		action(user, target, chance, fx, userNum, targetNum);
 	}
 }
 
@@ -32,7 +42,7 @@ var useHpPotionMove = new Move(
 		name:"Health Potion",
 		bonusToHit: 1,
 		validTargets: "friends",
-		act: function (user, target, fx, userNum, targetNum) {
+		act: function (user, target, chance, fx, userNum, targetNum) {
 			if (user.usePotionHp()) {
 				target.healFraction(0.5);
 				addFx(target, "rest");
@@ -46,8 +56,7 @@ normalMoves.push(new Move(
 	{
 		name:"Shoot",
 		bonusToHit: 0.5, 
-		act: function (user, target, fx, userNum, targetNum) {
-			var chance = this.hitChance(user, target);
+		act: function (user, target, chance, fx, userNum, targetNum) {
 			if (Math.random() < chance) {
 				target.hurt(Math.max(user.iStr() / 8, 1));
 				addFx(target, "shot");
@@ -63,8 +72,7 @@ normalMoves.push(new Move({name:"Rest", bonusToHit: 1, act: function (user, targ
 	addFx(user, "rest");
 	user.texts.push("Rested");
 }}));
-normalMoves.push(new Move({name:"Whack!", bonusToHit: 0.25, act: function (user, target, fx, userNum, targetNum) {
-	var chance = this.hitChance(user, target);
+normalMoves.push(new Move({name:"Whack!", bonusToHit: 0.25, act: function (user, target, chance, fx, userNum, targetNum) {
 	if (Math.random() < chance) {
 		target.hurt(Math.max(user.iStr() / 4, 1));
 		target.useEnergy(Math.max(user.iStr() / 8, 1));
