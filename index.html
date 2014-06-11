@@ -55,7 +55,9 @@ icon: neptune9/neptune9-icon.png
 				ng-repeat="action in player.card.creature.moves" 
 				ng-class="{selected: $index==selectedAction}"
 				ng-click="useAction($index)">
-				{{action.name}}</div>
+				{{action.name}}
+				<span class="actionodds">{{player.actionOdds[$index]}}</span>
+				</div>
 			</div>
 		</div>
 	</div>

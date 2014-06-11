@@ -11,12 +11,12 @@ angular.module('neptune9', ['ngAnimate'])
   gs.cards = [{}, {}, {}, {}];
   gs.cards[0].creature = new Creature({name:"Matthew", hp:10, ai: null});
   gs.cards[1].creature = new Creature({name:"Ålice", hp:10, ai: null});
-  gs.cards[2].creature = new Creature({name:"Someone", hp:3});
-  gs.cards[3].creature = new Creature({name:"Else", hp:4});
+  gs.cards[2].creature = new Creature({name:"Someone", hp:3, speed: 5});
+  gs.cards[3].creature = new Creature({name:"Else", hp:4, speed: 12});
 
   gs.players = [];
-  gs.players[0] = new Player({card: gs.cards[0], targetNum: 2});
-  gs.players[1] = new Player({card: gs.cards[1], targetNum: 3});
+  gs.players[0] = new Player(gs.cards, {card: gs.cards[0], targetNum: 2});
+  gs.players[1] = new Player(gs.cards, {card: gs.cards[1], targetNum: 3});
 
   //let every card know its index.
   for (var i = 0; i < 4; i++) {
@@ -77,6 +77,10 @@ angular.module('neptune9', ['ngAnimate'])
   		drawLine(from, to, e.color, e.thickness, e.duration);
   	});
 		window.setTimeout(endTurn, 800, gs);
+
+    gs.players.forEach(function (player) {
+      player.updateActionOdds();
+    });
   }
 
   gs.skipTurn = function() {
@@ -111,7 +115,7 @@ angular.module('neptune9', ['ngAnimate'])
 	$scope.select = function (index) {
 		var player = gameService.players[gameService.turn];
 		if (player === undefined) return;
-		player.setTarget(index);
+		player.setTargetNum(index);
 	}
 
 	$scope.isActiveTarget = function () {
@@ -119,7 +123,7 @@ angular.module('neptune9', ['ngAnimate'])
 		if (activePlayer === undefined) {
 			return false;
 		}
-		return activePlayer.targetNum === $scope.card.num;
+		return activePlayer.getTargetNum() === $scope.card.num;
 	}
 
 })
@@ -143,9 +147,9 @@ angular.module('neptune9', ['ngAnimate'])
 		$scope.$apply(function () { //called externally, so we must apply
 			var actions = $scope.player.card.creature.moves;
 			if (key === "left") {
-				$scope.player.setTarget(2);
+				$scope.player.setTargetNum(2);
 			} else if (key === "right") {
-				$scope.player.setTarget(3);
+				$scope.player.setTargetNum(3);
 			} else if (key === "down") {
 				$scope.selectedAction++;
 				if ($scope.selectedAction >= actions.length) $scope.selectedAction = 0;
@@ -153,7 +157,7 @@ angular.module('neptune9', ['ngAnimate'])
 				$scope.selectedAction--;
 				if ($scope.selectedAction < 0 ) $scope.selectedAction = actions.length - 1;
 			} else if (key === "use") {
-				gameService.useAction($scope.player.card, $scope.selectedAction, $scope.player.targetNum);
+				gameService.useAction($scope.player.card, $scope.selectedAction, $scope.player.getTargetNum());
 			}
 		});
 	}
@@ -171,7 +175,7 @@ angular.module('neptune9', ['ngAnimate'])
 	$scope.useAction = function (index) {
 		$scope.selectedAction = index;
 		if ($scope.isMyTurn()) {
-			gameService.useAction($scope.player.card, index, $scope.player.targetNum);
+			gameService.useAction($scope.player.card, index, $scope.player.getTargetNum());
 		}
 	}
 })

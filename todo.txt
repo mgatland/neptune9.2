@@ -1,13 +1,14 @@
 todo:
 
+[ ] health potions
+[ ] kills give you potions
+[ ] mana potions
+
 [ ] show % to hit on moves
 [ ] more interesting moves
 	[ ] heal
 	[ ] energise
 [ ] different enemies with portraits
-[ ] health potions
-[ ] mana potions
-[ ] kills give you potions
 
 ----
 

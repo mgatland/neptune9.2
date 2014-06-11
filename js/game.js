@@ -14,7 +14,7 @@ function Move(options) {
 	 this[attrname] = options[attrname]; 
 	};
 	this.hitChance = function(user, target) {
-		var chance = 0.2 + this.bonusToHit + (1 - this.bonusToHit) * (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
+		var chance = this.bonusToHit + (1 - this.bonusToHit) * (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
 		return Math.min(chance, 1);
 	}
 }
@@ -60,16 +60,43 @@ normalMoves.push(new Move({name:"Charge", bonusToHit: 1, act: function (user, ta
 	user.name += "!";
 }}));
 
-function Player(options) {
+//passing in _cards is a hack so we can update action odds mid-turn
+//fixme: only do it once at the end of a turn, called by gameservice,
+//pass in the cards then
+function Player(_cards, options) {
+	var _this = this;
+
 	for (var attrname in options) {
 	 this[attrname] = options[attrname]; 
 	};
+	var _targetNum = -1;
 
-	this.setTarget = function (i) {
-		this.targetNum = i;
+	this.actionOdds = [];
+
+
+	this.updateActionOdds = function () {
+		_this.actionOdds = [];
+		var user = _this.card.creature;
+		var target = _cards[_targetNum].creature;
+		_this.card.creature.moves.forEach(function (move) {
+			var hitChance = move.hitChance(user, target);
+			_this.actionOdds.push(Math.floor(hitChance*100) + "%");
+		});
+			
 	}
+
+	this.setTargetNum = function (i) {
+		_targetNum = i;
+		this.updateActionOdds();
+	}
+
+	this.getTargetNum = function () {
+		return _targetNum;
+	}
+
 	//initialize target
-	this.setTarget(this.targetNum);
+	this.setTargetNum(this.targetNum);
+	this.targetNum = undefined;
 }
 
 function Creature (options) {
