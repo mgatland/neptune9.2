@@ -6,11 +6,16 @@ function Game() {
 
 	this.turn = 0;
 
+	var weewit = {name:"Weewit", img:"weewit.png", hp:3, speed: 5, energy: 4};
+	var gobnit = {name:"Gobnit", img:"gobnit.png", hp:4, speed: 12, energy: 6};
+	var leepig = {name: "Leepig", img: "leepig.png", hp: 6, speed: 15};
+	var dopnot = {name: "Dopnot", img: "dopnot.png", hp: 10, speed: 20};
+
   this.cards = [{}, {}, {}, {}];
   this.cards[0].creature = new Creature({name:"Kathee", img:"spy.png", hp:10, ai: null, team: "good"});
   this.cards[1].creature = new Creature({name:"Imogen", img:"missionary.png", hp:10, ai: null, team: "good"});
-  this.cards[2].creature = new Creature({name:"Weewit", img:"weewit.png", hp:3, speed: 5});
-  this.cards[3].creature = new Creature({name:"Gobnit", img:"gobnit.png", hp:4, speed: 12});
+  this.cards[2].creature = new Creature(weewit);
+  this.cards[3].creature = new Creature(gobnit);
 
   this.players = [];
   this.players[0] = new Player(this.cards, {card: this.cards[0], targetNum: 2});
@@ -24,7 +29,8 @@ function Game() {
   var nextTurnMap = {0:2, 2:1, 1:3, 3:0};
 
   var spawnCreature = function(num) {
-  	_this.cards[num].creature = new Creature({name:"Dingbat", img:"weewit.png", hp:3});
+  	var type = (Math.random() < 0.5) ? leepig : dopnot;
+  	_this.cards[num].creature = new Creature(type);
   }
 
   this.useAction = function(userCard, actionNum, targetNum) {
