@@ -39,14 +39,7 @@ function Game() {
   	var target = this.cards[targetNum].creature;
     var wasAlive = target.isAlive();
   	console.log(attacker.name + " used " + action.name + " on " + target.name);
-  	var fx = [];
-  	action.act(attacker, target, fx, userCard.num, targetNum);
-
-  	fx.forEach(function (e) {
-  		var from = coordsForCardNum(e.from);
-  		var to = coordsForCardNum(e.to);
-  		drawLine(from, to, e.color, e.thickness, e.duration);
-  	});
+  	action.act(attacker, target, userCard.num, targetNum);
 
     if (target.isAlive() === false && wasAlive === true) {
       console.log("Target was killed");
@@ -122,10 +115,10 @@ function Move(options) {
 		return target;
 	}
 
-	this.act = function (user, target, fx, userNum, targetNum) {
+	this.act = function (user, target, userNum, targetNum) {
 		target = fixTarget(user, target);
 		var chance = this.hitChance(user, target);
-		action(user, target, chance, fx, userNum, targetNum);
+		action(user, target, chance, userNum, targetNum);
 	}
 }
 
@@ -134,7 +127,7 @@ var useHpPotionMove = new Move(
 		name:"Health Potion",
 		bonusToHit: 1,
 		validTargets: "friends",
-		act: function (user, target, chance, fx, userNum, targetNum) {
+		act: function (user, target, chance) {
 			if (user.usePotionHp()) {
 				target.healFraction(0.5);
 				addFx(target, "rest");
@@ -148,7 +141,7 @@ var useEnergyPotionMove = new Move(
 		name:"Energy Potion",
 		bonusToHit: 1,
 		validTargets: "friends",
-		act: function (user, target, chance, fx, userNum, targetNum) {
+		act: function (user, target, chance) {
 			if (user.usePotionEnergy()) {
 				target.restoreEnergyFraction(1);
 				addFx(target, "rest");
@@ -163,11 +156,10 @@ normalMoves.push(new Move(
 	{
 		name:"Shoot",
 		bonusToHit: 0.5, 
-		act: function (user, target, chance, fx, userNum, targetNum) {
+		act: function (user, target, chance) {
 			if (Math.random() < chance) {
 				target.hurt(Math.max(user.iStr() / 8, 1));
 				addFx(target, "shot");
-				fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:6, duration: 500});
 			} else {
 				addFx(target, "miss");
 			}
@@ -179,12 +171,11 @@ normalMoves.push(new Move({name:"Rest", bonusToHit: 1, act: function (user, targ
 	addFx(user, "rest");
 	user.texts.push("Rested");
 }}));
-normalMoves.push(new Move({name:"Whack!", bonusToHit: 0.25, act: function (user, target, chance, fx, userNum, targetNum) {
+normalMoves.push(new Move({name:"Whack!", bonusToHit: 0.25, act: function (user, target, chance) {
 	if (Math.random() < chance) {
 		target.hurt(Math.max(user.iStr() / 4, 1));
 		target.useEnergy(Math.max(user.iStr() / 8, 1));
 		addFx(target, "whack");
-		fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:12, duration: 800});
 	} else {
 		addFx(target,"miss");
 	}
