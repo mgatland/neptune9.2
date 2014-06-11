@@ -17,7 +17,7 @@ function Move(options) {
 	var validTargets = options.validTargets;
 
 	this.hitChance = function(user, target) {
-		var chance = bonusToHit + (1 - bonusToHit) * (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
+  	var chance = bonusToHit + (1 - bonusToHit) * (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
 		return Math.min(chance, 1);
 	}
 
@@ -50,6 +50,21 @@ var useHpPotionMove = new Move(
 		}
 	}
 );
+
+var useEnergyPotionMove = new Move(
+	{
+		name:"Energy Potion",
+		bonusToHit: 1,
+		validTargets: "friends",
+		act: function (user, target, chance, fx, userNum, targetNum) {
+			if (user.usePotionEnergy()) {
+				target.restoreEnergyFraction(1);
+				addFx(target, "rest");
+			}
+		}
+	}
+);
+
 
 var normalMoves = [];
 normalMoves.push(new Move(
@@ -192,6 +207,13 @@ function Creature (options) {
 		}
 	}
 
+	this.getPotionEnergy = function () {
+		this.potions.energy++;
+		if (this.potions.energy === 1) {
+			this.moves.push(useEnergyPotionMove);
+		}
+	}
+
 	this.usePotionHp = function () {
 		if (this.potions.hp < 1) return false;
 		this.potions.hp -= 1;
@@ -201,10 +223,25 @@ function Creature (options) {
 		return true;
 	}
 
+	this.usePotionEnergy = function () {
+		if (this.potions.energy < 1) return false;
+		this.potions.energy -= 1;
+		if (this.potions.energy < 1) {
+			this.moves.splice(this.moves.indexOf(useEnergyPotionMove), 1);
+		}
+		return true;
+	}
+
 	this.healFraction = function(amount) {
 		if (this.hp <= 0) return;
 		this.hp += Math.floor(amount * this.maxHp);
 		this.hp = Math.min(this.hp, this.maxHp);
+	}
+
+	this.restoreEnergyFraction = function(amount) {
+		if (this.hp <= 0) return;
+		this.energy += Math.floor(amount * this.maxEnergy);
+		this.energy = Math.min(this.energy, this.maxEnergy);		
 	}
 
 	this.isAlive = function () {

@@ -81,7 +81,12 @@ angular.module('neptune9', ['ngAnimate'])
 
     if (target.isAlive() === false && wasAlive === true) {
       console.log("Target was killed");
-      attacker.getPotionHp();
+
+      if (Math.random() > 0.5) {
+        attacker.getPotionHp();
+      } else {
+        attacker.getPotionEnergy();
+      }
     }
 
     gs.players.forEach(function (player) {
