@@ -1,7 +1,16 @@
 todo:
 
+[ ] show % to hit on moves
 [ ] more interesting moves
-[ ] enemy sequence
+	[ ] heal
+	[ ] energise
+[ ] different enemies with portraits
+[ ] health potions
+[ ] mana potions
+[ ] kills give you potions
+
+----
+
 [ ] networked multiplayer
 
 [ ] attack sounds

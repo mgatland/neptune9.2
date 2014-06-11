@@ -15,8 +15,8 @@ angular.module('neptune9', ['ngAnimate'])
   gs.cards[3].creature = new Creature({name:"Else", hp:4});
 
   gs.players = [];
-  gs.players[0] = {card: gs.cards[0], targetNum: 2};
-  gs.players[1] = {card: gs.cards[1], targetNum: 3};
+  gs.players[0] = new Player({card: gs.cards[0], targetNum: 2});
+  gs.players[1] = new Player({card: gs.cards[1], targetNum: 3});
 
   //let every card know its index.
   for (var i = 0; i < 4; i++) {
@@ -111,7 +111,7 @@ angular.module('neptune9', ['ngAnimate'])
 	$scope.select = function (index) {
 		var player = gameService.players[gameService.turn];
 		if (player === undefined) return;
-		player.targetNum = index;
+		player.setTarget(index);
 	}
 
 	$scope.isActiveTarget = function () {
@@ -143,9 +143,9 @@ angular.module('neptune9', ['ngAnimate'])
 		$scope.$apply(function () { //called externally, so we must apply
 			var actions = $scope.player.card.creature.moves;
 			if (key === "left") {
-				$scope.player.targetNum = 2;
+				$scope.player.setTarget(2);
 			} else if (key === "right") {
-				$scope.player.targetNum = 3;
+				$scope.player.setTarget(3);
 			} else if (key === "down") {
 				$scope.selectedAction++;
 				if ($scope.selectedAction >= actions.length) $scope.selectedAction = 0;

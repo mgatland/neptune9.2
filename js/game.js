@@ -9,25 +9,43 @@ function addFx(character, fxName) {
 	}, 400);
 }
 
-var normalMoves = [];
-normalMoves.push({name:"Shoot", act: function (user, target, fx, userNum, targetNum) {
-	var hitChance = 0.5 + 0.5 * (user.iSpd() / (user.iSpd() + target.iSpd()));
-	if (Math.random() < hitChance) {
-		target.hurt(Math.max(user.iStr() / 8, 1));
-		addFx(target, "shot");
-		fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:6, duration: 500});
-	} else {
-		addFx(target, "miss");
+function Move(options) {
+	for (var attrname in options) {
+	 this[attrname] = options[attrname]; 
+	};
+	this.hitChance = function(user, target) {
+		var chance = 0.2 + this.bonusToHit + (1 - this.bonusToHit) * (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
+		return Math.min(chance, 1);
 	}
-	user.useEnergy(3);
-}});
-normalMoves.push({name:"Rest", act: function (user, target) {
+}
+
+
+
+var normalMoves = [];
+normalMoves.push(new Move(
+	{
+		name:"Shoot",
+		bonusToHit: 0.5, 
+		act: function (user, target, fx, userNum, targetNum) {
+			var chance = this.hitChance(user, target);
+			if (Math.random() < chance) {
+				target.hurt(Math.max(user.iStr() / 8, 1));
+				addFx(target, "shot");
+				fx.push({from:userNum, to:targetNum, color:"rgba(255, 0, 0, 0.5)", thickness:6, duration: 500});
+			} else {
+				addFx(target, "miss");
+			}
+			user.useEnergy(3);
+		}
+	}
+	));
+normalMoves.push(new Move({name:"Rest", bonusToHit: 1, act: function (user, target) {
 	addFx(user, "rest");
 	user.texts.push("Rested");
-}});
-normalMoves.push({name:"Whack!", act: function (user, target, fx, userNum, targetNum) {
-	var hitChance = 1 * (user.iSpd() * 3 / (user.iSpd() * 3 + target.iSpd()));
-	if (Math.random() < hitChance) {
+}}));
+normalMoves.push(new Move({name:"Whack!", bonusToHit: 0.25, act: function (user, target, fx, userNum, targetNum) {
+	var chance = this.hitChance(user, target);
+	if (Math.random() < chance) {
 		target.hurt(Math.max(user.iStr() / 4, 1));
 		target.useEnergy(Math.max(user.iStr() / 8, 1));
 		addFx(target, "whack");
@@ -36,11 +54,23 @@ normalMoves.push({name:"Whack!", act: function (user, target, fx, userNum, targe
 		addFx(target,"miss");
 	}
 	user.useEnergy(8);
-}});
-normalMoves.push({name:"Charge", act: function (user, target) {
+}}));
+normalMoves.push(new Move({name:"Charge", bonusToHit: 1, act: function (user, target) {
 	user.texts.push("Charged!");
 	user.name += "!";
-}});
+}}));
+
+function Player(options) {
+	for (var attrname in options) {
+	 this[attrname] = options[attrname]; 
+	};
+
+	this.setTarget = function (i) {
+		this.targetNum = i;
+	}
+	//initialize target
+	this.setTarget(this.targetNum);
+}
 
 function Creature (options) {
 	var c = this;
