@@ -37,6 +37,9 @@ icon: neptune9/neptune9-icon.png
 				<div class="energybar">
 					<div class="energybarinside" style="height:{{card.creature.energy*64/card.creature.maxEnergy}}"></div>
 				</div>
+				<div class="healthpotions" ng-if="card.creature.potions.hp > 0">
+					H Potions: {{card.creature.potions.hp}}
+				</div>
 				<div class="msg" ng-repeat="text in card.creature.texts">{{text}}</div>
 				<div ng-if="isActiveTarget()">(Target)</div>
 				<img class="cardfx" 

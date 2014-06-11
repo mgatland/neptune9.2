@@ -17,9 +17,29 @@ function Move(options) {
 		var chance = this.bonusToHit + (1 - this.bonusToHit) * (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
 		return Math.min(chance, 1);
 	}
+	this.fixTarget = function (user, target) {
+		if (this.validTargets === "friends") {
+			if (target.team !== user.team) {
+				return user;
+			}
+		}
+		return target;
+	}
 }
 
-
+var useHpPotionMove = new Move(
+	{
+		name:"Health Potion",
+		bonusToHit: 1,
+		validTargets: "friends",
+		act: function (user, target, fx, userNum, targetNum) {
+			if (user.usePotionHp()) {
+				target.healFraction(0.5);
+				addFx(target, "rest");
+			}
+		}
+	}
+);
 
 var normalMoves = [];
 normalMoves.push(new Move(
@@ -102,6 +122,7 @@ function Player(_cards, options) {
 function Creature (options) {
 	var c = this;
 	this.name = "Name";
+	this.team = "evil";
 
 	this.hp = 10;
 	this.energy = 10;
@@ -109,10 +130,18 @@ function Creature (options) {
 	this.speed = 10; //hit and dodge
 	this.focus = 10; //magic, resist magic
 
+	this.potions = {};
+	this.potions.hp = 0;
+	this.potions.energy = 0;
+
 	this.texts = [];
 	this.fx = [];
 
-	this.moves = normalMoves;
+	this.moves = [];
+	normalMoves.forEach(function (move) {
+		c.moves.push(move);
+	});
+
 	this.deadTime = 0;
 	this.ai = function (gs, num) {
 		return {move: 0, target: (num + 2) % 4};
@@ -146,6 +175,32 @@ function Creature (options) {
 		amount = Math.floor(amount);
 		this.energy += amount;
 		if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
+	}
+
+	this.getPotionHp = function () {
+		this.potions.hp++;
+		if (this.potions.hp === 1) {
+			this.moves.push(useHpPotionMove);
+		}
+	}
+
+	this.usePotionHp = function () {
+		if (this.potions.hp < 1) return false;
+		this.potions.hp -= 1;
+		if (this.potions.hp < 1) {
+			this.moves.splice(this.moves.indexOf(useHpPotionMove), 1);
+		}
+		return true;
+	}
+
+	this.healFraction = function(amount) {
+		if (this.hp <= 0) return;
+		this.hp += Math.floor(amount * this.maxHp);
+		this.hp = Math.min(this.hp, this.maxHp);
+	}
+
+	this.isAlive = function () {
+		return this.hp > 0;
 	}
 }
 
