@@ -1,5 +1,97 @@
 //Game code
 
+function Game() {
+	var _this = this;
+	var moveIsUsed = false;
+
+	this.turn = 0;
+
+  this.cards = [{}, {}, {}, {}];
+  this.cards[0].creature = new Creature({name:"Kathee", img:"spy.png", hp:10, ai: null, team: "good"});
+  this.cards[1].creature = new Creature({name:"Imogen", img:"missionary.png", hp:10, ai: null, team: "good"});
+  this.cards[2].creature = new Creature({name:"Weewit", img:"weewit.png", hp:3, speed: 5});
+  this.cards[3].creature = new Creature({name:"Gobnit", img:"gobnit.png", hp:4, speed: 12});
+
+  this.players = [];
+  this.players[0] = new Player(this.cards, {card: this.cards[0], targetNum: 2});
+  this.players[1] = new Player(this.cards, {card: this.cards[1], targetNum: 3});
+
+  //let every card know its index.
+  for (var i = 0; i < 4; i++) {
+  	this.cards[i].num = i;
+  }
+
+  var nextTurnMap = {0:2, 2:1, 1:3, 3:0};
+
+  var spawnCreature = function(num) {
+  	_this.cards[num].creature = new Creature({name:"Dingbat", img:"weewit.png", hp:3});
+  }
+
+  this.useAction = function(userCard, actionNum, targetNum) {
+  	if (this.cards[this.turn] !== userCard) {
+  		console.log("Someone tried to act but it's not their turn.");
+  		return false;
+  	}
+  	if (moveIsUsed) return false;
+  	moveIsUsed = true;
+  	var attacker = userCard.creature;
+  	var action = attacker.moves[actionNum];
+  	var target = this.cards[targetNum].creature;
+    var wasAlive = target.isAlive();
+  	console.log(attacker.name + " used " + action.name + " on " + target.name);
+  	var fx = [];
+  	action.act(attacker, target, fx, userCard.num, targetNum);
+
+  	fx.forEach(function (e) {
+  		var from = coordsForCardNum(e.from);
+  		var to = coordsForCardNum(e.to);
+  		drawLine(from, to, e.color, e.thickness, e.duration);
+  	});
+
+    if (target.isAlive() === false && wasAlive === true) {
+      console.log("Target was killed");
+
+      if (Math.random() > 0.5) {
+        attacker.getPotionHp();
+      } else {
+        attacker.getPotionEnergy();
+      }
+    }
+
+    this.players.forEach(function (player) {
+      player.updateActionOdds();
+    });
+    return true;
+  }  
+
+  this.endTurn = function() {
+  	this.turn = nextTurnMap[this.turn];
+  	moveIsUsed = false;
+  	var creature = this.cards[this.turn].creature;
+
+  	creature.texts.length = 0; //clear messages
+
+  	if (creature.hp <= 0) {
+  		creature.deadTime++;
+  		if (creature.deadTime == 3) {
+  			//create new creature
+  			spawnCreature(this.turn);
+  		}
+  		moveIsUsed = true;
+  		return "skip";
+  	} else {
+  		creature.recoverEnergy(creature.maxEnergy / 4);
+  	}
+
+  	if (creature.ai != null) {
+  		var action = creature.ai(this, this.turn);
+  		this.useAction(this.cards[this.turn], action.move, action.target);
+  		return "endturn"
+  	}
+  	return "normal";
+  }
+}
+
 function addFx(character, fxName) {
 	var fx = {sprite: fxName + ".png"};
 	character.fx.push(fx);
@@ -166,7 +258,7 @@ function Creature (options) {
 	});
 
 	this.deadTime = 0;
-	this.ai = function (gs, num) {
+	this.ai = function (game, num) {
 		return {move: 0, target: (num + 2) % 4};
 	};
 

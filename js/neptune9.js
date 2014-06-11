@@ -3,100 +3,33 @@
 angular.module('neptune9', ['ngAnimate'])
 
 .factory('gameService', function($rootScope) {
+
   var gs = {};
+  var game = new Game();
 
-  gs.turn = 0;
-  var moveIsUsed = false;
+  gs.turn = 0; //todo: get rid of this, push all code that uses it into game.js
 
-  gs.cards = [{}, {}, {}, {}];
-  gs.cards[0].creature = new Creature({name:"Kathee", img:"spy.png", hp:10, ai: null, team: "good"});
-  gs.cards[1].creature = new Creature({name:"Imogen", img:"missionary.png", hp:10, ai: null, team: "good"});
-  gs.cards[2].creature = new Creature({name:"Weewit", img:"weewit.png", hp:3, speed: 5});
-  gs.cards[3].creature = new Creature({name:"Gobnit", img:"gobnit.png", hp:4, speed: 12});
+  gs.cards = game.cards;
+  gs.players = game.players;
 
-  gs.players = [];
-  gs.players[0] = new Player(gs.cards, {card: gs.cards[0], targetNum: 2});
-  gs.players[1] = new Player(gs.cards, {card: gs.cards[1], targetNum: 3});
-
-  //let every card know its index.
-  for (var i = 0; i < 4; i++) {
-  	gs.cards[i].num = i;
+  var queueNextTurn = function(delay) {
+    window.setTimeout(endTurn, delay, gs);
   }
-
-  var spawnCreature = function(gs, num) {
-  	gs.cards[num].creature = new Creature({name:"Dingbat", img:"weewit.png", hp:3, num:num});
-  }
-
-  var nextTurnMap = {0:2, 2:1, 1:3, 3:0};
 
   var endTurn = function(gs) {
-  	gs.turn = nextTurnMap[gs.turn];
-  	moveIsUsed = false;
-  	var creature = gs.cards[gs.turn].creature;
-
-  	creature.texts.length = 0; //clear messages
-
-  	if (creature.hp <= 0) {
-  		creature.deadTime++;
-  		if (creature.deadTime == 3) {
-  			//create new creature
-  			spawnCreature(gs, gs.turn);
-  		}
-  		gs.skipTurn();
-  		$rootScope.$apply();
-  		return;
-  	} else {
-  		creature.recoverEnergy(creature.maxEnergy / 4);
-  	}
-
-  	if (creature.ai != null) {
-  		var action = creature.ai(gs, gs.turn);
-  		gs.useAction(gs.cards[gs.turn], action.move, action.target);
-  	}
-  	//Otherwise, wait for player input.
+    console.log("gs.endTurn");
+    var result = game.endTurn();
+    gs.turn = game.turn;
+    if (result === "skip") queueNextTurn(600);
+    if (result === "endturn") queueNextTurn(800);
   	$rootScope.$apply();
   }
 
   gs.useAction = function(userCard, actionNum, targetNum) {
-  	if (gs.cards[gs.turn] !== userCard) {
-  		console.log("Someone tried to act but it's not their turn.");
-  		return;
-  	}
-  	if (moveIsUsed) return;
-  	moveIsUsed = true;
-  	var attacker = userCard.creature;
-  	var action = attacker.moves[actionNum];
-  	var target = gs.cards[targetNum].creature;
-    var wasAlive = target.isAlive();
-  	console.log(attacker.name + " used " + action.name + " on " + target.name);
-  	var fx = [];
-  	action.act(attacker, target, fx, userCard.num, targetNum);
-
-  	fx.forEach(function (e) {
-  		var from = coordsForCardNum(e.from);
-  		var to = coordsForCardNum(e.to);
-  		drawLine(from, to, e.color, e.thickness, e.duration);
-  	});
-		window.setTimeout(endTurn, 800, gs);
-
-    if (target.isAlive() === false && wasAlive === true) {
-      console.log("Target was killed");
-
-      if (Math.random() > 0.5) {
-        attacker.getPotionHp();
-      } else {
-        attacker.getPotionEnergy();
-      }
+    console.log("gs.useAction");
+    if (game.useAction(userCard, actionNum, targetNum)) {
+      queueNextTurn(800);
     }
-
-    gs.players.forEach(function (player) {
-      player.updateActionOdds();
-    });
-  }
-
-  gs.skipTurn = function() {
-  	moveIsUsed = true;
-  	window.setTimeout(endTurn, 600, gs);
   }
 
   return gs;
