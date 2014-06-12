@@ -2,7 +2,9 @@ todo:
 
 [ ] different enemies with portraits
 [ ] experience and levelling
-
+	[ ] count XP
+	[ ] upgrade stats
+	[ ] give new abilities
 ----
 
 [ ] networked multiplayer
@@ -11,6 +13,10 @@ todo:
 [ ] recolor images to fit the color scheme?
 [ ] put static over whole screen or just images
 [ ] more Star Trek style UI
+
+2014-06-12
+
+
 
 2014-06-11
 

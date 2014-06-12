@@ -14,7 +14,6 @@ icon: neptune9/neptune9-icon.png
 	<link rel="stylesheet" href="css/game.css">
 	<script data-main="js/game" src="js/angular.js"></script>
 	<script data-main="js/game" src="js/angular-animate.js"></script>
-	<script data-main="js/game" src="js/lines.js"></script>
 	<script data-main="js/game" src="js/game.js"></script>
 	<script data-main="js/game" src="js/neptune9.js"></script>
 	{% include analytics.html %}
@@ -31,11 +30,11 @@ icon: neptune9/neptune9-icon.png
 				<div>{{card.creature.name}}</div>
 				<div class="portrait">
 					<img class="inportrait" ng-src="art/{{card.creature.img}}">
-					<div class="damage" style="height:{{64-card.creature.hp*64/card.creature.maxHp}}"></div>
+					<div class="damage" style="height:{{64-card.creature.hp*64/card.creature.getMaxHp()}}"></div>
 					<img class="inportrait" src="art/dead.png" ng-if="card.creature.hp <= 0">
 				</div>
 				<div class="energybar">
-					<div class="energybarinside" style="height:{{card.creature.energy*64/card.creature.maxEnergy}}"></div>
+					<div class="energybarinside" style="height:{{card.creature.energy*64/card.creature.getMaxEnergy()}}"></div>
 				</div>
 				<div class="hppotions" 
 					ng-if="card.creature.potions.hp > 0">
@@ -53,18 +52,32 @@ icon: neptune9/neptune9-icon.png
 			</div>
 		</div>
 		<div class="controls">
-			<div class="controlpanel" 
-			ng-repeat="player in players" 
+			<div class="controlpanel"
 			ng-controller="ControlCtrl"
 			ng-class="{turn: isMyTurn()}"
-			ng-init="init($index)">
+			ng-show="!showLevelUpUI()"
+			ng-init="init()">
 				<div 
 				class="actionbutton"
-				ng-repeat="action in player.card.creature.moves" 
+				ng-repeat="action in player().card.creature.moves" 
 				ng-class="{selected: $index==selectedAction}"
 				ng-click="useAction($index)">
 				{{action.name}}
-				<span class="actionodds">{{player.actionOdds[$index]}}</span>
+				<span class="actionodds">{{player().actionOdds[$index]}}</span>
+				</div>
+			</div>
+			<div ng-controller="LevelUpCtrl">
+				<div 
+					ng-show="showLevelUpUI()"
+					class="controlpanel">
+					<div>Choose an attribute to improve:</div>
+					<div 
+						class="actionbutton"
+						ng-repeat="attr in player().card.creature.attrNames" 
+						ng-click="levelUpAttribute($index)">
+						{{attr}}
+						<span class="actionodds">{{player().card.creature.attr[$index]}}</span>
+					</div>
 				</div>
 			</div>
 		</div>

@@ -8,6 +8,7 @@ angular.module('neptune9', ['ngAnimate'])
   var game = new Game();
 
   gs.turn = 0; //todo: get rid of this, push all code that uses it into game.js
+  gs.activePlayer = 0;
 
   gs.cards = game.cards;
   gs.players = game.players;
@@ -20,6 +21,10 @@ angular.module('neptune9', ['ngAnimate'])
     console.log("gs.endTurn");
     var result = game.endTurn();
     gs.turn = game.turn;
+    if (game.players[gs.turn] != undefined) {
+    	gs.activePlayer = gs.turn;
+    }
+
     if (result === "skip") queueNextTurn(600);
     if (result === "endturn") queueNextTurn(800);
   	$rootScope.$apply();
@@ -30,6 +35,10 @@ angular.module('neptune9', ['ngAnimate'])
     if (game.useAction(userCard, actionNum, targetNum)) {
       queueNextTurn(800);
     }
+  }
+
+  gs.moveIsUsed = function () {
+  	return game.moveIsUsed();
   }
 
   return gs;
@@ -43,6 +52,14 @@ angular.module('neptune9', ['ngAnimate'])
 .run(function ($rootScope, gameService) {
 	$rootScope.cards = gameService.cards;
 	$rootScope.players = gameService.players;
+
+	$rootScope.showLevelUpUI = function () {
+		return gameService.players[gameService.activePlayer].canLevelNow()
+			&& !gameService.moveIsUsed();
+	}
+	$rootScope.turn = function () {
+		return gameService.turn;
+	}
 })
 
 .controller('CardCtrl', function($scope, gameService) {
@@ -82,18 +99,19 @@ angular.module('neptune9', ['ngAnimate'])
 .controller('ControlCtrl', function($scope, gameService, keyboardService) {
 //	keys[0] = ['w', 's', 'a', 'd'];
 //	keys[1] = ['&#8593;', '&#8595;', '&#8592;', '&#8594;'];
-	$scope.num = 0;
-	$scope.player = null;
 	$scope.selectedAction = 0;
 
 	var keyCallback = function (key) {
-		console.log("Player " + $scope.num + " did " + key);
 		$scope.$apply(function () { //called externally, so we must apply
-			var actions = $scope.player.card.creature.moves;
+			var actions = player().card.creature.moves;
+
+			//If the action list shrank, we might be off the end of the list, so:
+			if ($scope.selectedAction >= actions.length) $scope.selectedAction = 0;
+
 			if (key === "left") {
-				$scope.player.setTargetNum(2);
+				player().setTargetNum(2);
 			} else if (key === "right") {
-				$scope.player.setTargetNum(3);
+				player().setTargetNum(3);
 			} else if (key === "down") {
 				$scope.selectedAction++;
 				if ($scope.selectedAction >= actions.length) $scope.selectedAction = 0;
@@ -101,26 +119,42 @@ angular.module('neptune9', ['ngAnimate'])
 				$scope.selectedAction--;
 				if ($scope.selectedAction < 0 ) $scope.selectedAction = actions.length - 1;
 			} else if (key === "use") {
-				gameService.useAction($scope.player.card, $scope.selectedAction, $scope.player.getTargetNum());
+				gameService.useAction(player().card, $scope.selectedAction, player().getTargetNum());
 			}
 		});
 	}
 
-	$scope.init = function (num) {
-		$scope.num = num;
-		$scope.player = gameService.players[num];
-		keyboardService.setActions(num, keyCallback);
+	var player = function () {
+		return gameService.players[gameService.activePlayer];
+	}
+	$scope.player = player;
+
+	$scope.init = function () {
+		keyboardService.setActions(0, keyCallback);
+		keyboardService.setActions(1, keyCallback);
 	}
 
 	$scope.isMyTurn = function () {
-		return gameService.turn === $scope.num;
+		return gameService.turn === player().card.num;
 	}
 
 	$scope.useAction = function (index) {
 		$scope.selectedAction = index;
 		if ($scope.isMyTurn()) {
-			gameService.useAction($scope.player.card, index, $scope.player.getTargetNum());
+			gameService.useAction(player().card, index, player().getTargetNum());
 		}
+	}
+})
+
+.controller('LevelUpCtrl', function($scope, gameService) {
+
+	var player = function () {
+		return gameService.players[gameService.activePlayer];
+	}
+	$scope.player = player;
+
+	$scope.levelUpAttribute = function (index) {
+		player().card.creature.levelUpAttribute(index);
 	}
 })
 ;

@@ -4,16 +4,20 @@ function Game() {
 	var _this = this;
 	var moveIsUsed = false;
 
+	this.experience = 0;
+	this.experienceTarget = 2;
+
 	this.turn = 0;
 
-	var weewit = {name:"Weewit", img:"weewit.png", hp:3, speed: 5, energy: 4};
-	var gobnit = {name:"Gobnit", img:"gobnit.png", hp:4, speed: 12, energy: 6};
-	var leepig = {name: "Leepig", img: "leepig.png", hp: 6, speed: 15};
-	var dopnot = {name: "Dopnot", img: "dopnot.png", hp: 10, speed: 20};
+//attrs: hp, energy, strength, speed, focus
+	var weewit = {name:"Weewit", img:"weewit.png", attr:[3, 10, 5, 5, 0]};
+	var gobnit = {name:"Gobnit", img:"gobnit.png", attr:[4,  6, 6, 9, 0]};
+	var leepig = {name: "Leepig", img: "leepig.png", attr:[10,  6, 8, 10, 10]};
+	var dopnot = {name: "Dopnot", img: "dopnot.png", attr:[10,  10, 12, 9, 10]};
 
   this.cards = [{}, {}, {}, {}];
-  this.cards[0].creature = new Creature({name:"Kathee", img:"spy.png", hp:10, ai: null, team: "good"});
-  this.cards[1].creature = new Creature({name:"Imogen", img:"missionary.png", hp:10, ai: null, team: "good"});
+  this.cards[0].creature = new Creature({name:"Kathee", img:"spy.png", attr:[10, 10, 100, 100, 100], ai: null, team: "good"});
+  this.cards[1].creature = new Creature({name:"Imogen", img:"missionary.png", attr:[10, 10, 100, 100, 100], ai: null, team: "good"});
   this.cards[2].creature = new Creature(weewit);
   this.cards[3].creature = new Creature(gobnit);
 
@@ -49,12 +53,22 @@ function Game() {
 
     if (target.isAlive() === false && wasAlive === true) {
       console.log("Target was killed");
-
+      if (attacker.team === "good" && target.team !== "good") {
+      	this.experience++;
+      }
       if (Math.random() > 0.5) {
         attacker.getPotionHp();
       } else {
         attacker.getPotionEnergy();
       }
+    }
+
+    if (this.experience >= this.experienceTarget) {
+    	this.experience -= this.experienceTarget;
+    	this.experienceTarget += 2;
+	    this.players.forEach(function (player) {
+	      player.card.creature.queueLevelUp();
+	    });
     }
 
     this.players.forEach(function (player) {
@@ -79,7 +93,7 @@ function Game() {
   		moveIsUsed = true;
   		return "skip";
   	} else {
-  		creature.recoverEnergy(creature.maxEnergy / 4);
+  		creature.recoverEnergy(creature.getMaxEnergy() / 4);
   	}
 
   	if (creature.ai != null) {
@@ -88,6 +102,10 @@ function Game() {
   		return "endturn"
   	}
   	return "normal";
+  }
+
+  this.moveIsUsed = function () {
+  	return moveIsUsed;
   }
 }
 
@@ -226,25 +244,39 @@ function Player(_cards, options) {
 		return _targetNum;
 	}
 
+	this.canLevelNow = function () {
+		return (this.card.creature.levelUpPoints > 0);
+	}
+
 	//initialize target
 	this.setTargetNum(this.targetNum);
 	this.targetNum = undefined;
 }
 
+var MAXHP = 0;
+var MAXENERGY = 1;
+var STRENGTH = 2;
+var SPEED = 3;
+var FOCUS = 4;
+var attrNames = ["Hitpoints", "Energy", "Strength", "Speed", "Focus"];
+
 function Creature (options) {
 	var c = this;
 	this.name = "Name";
 	this.team = "evil";
-
+	this.attr = [];
 	this.hp = 10;
 	this.energy = 10;
-	this.strength = 10; //attack damage
-	this.speed = 10; //hit and dodge
-	this.focus = 10; //magic, resist magic
+	this.attr[STRENGTH] = 10; //attack damage
+	this.attr[SPEED] = 10; //hit and dodge
+	this.attr[FOCUS] = 10; //magic, resist magic
+	this.attrNames = attrNames;
 
 	this.potions = {};
 	this.potions.hp = 0;
 	this.potions.energy = 0;
+
+	this.levelUpPoints = 0;
 
 	this.texts = [];
 	this.fx = [];
@@ -262,14 +294,22 @@ function Creature (options) {
 	for (var attrname in options) {
 	 this[attrname] = options[attrname]; 
 	};
-	this.maxHp = this.hp;
-	this.maxEnergy = this.energy;
+	this.attr[MAXHP] = this.hp;
+	this.attr[MAXENERGY] = this.energy;
 
-	var energyModifier = function () { return c.energy / c.maxEnergy + 0.5};
+	var energyModifier = function () { return c.energy / c.attr[MAXENERGY] + 0.5};
 
-	this.iStr = function () { return c.strength * energyModifier()};
-	this.iSpd = function () { return c.speed * energyModifier()};
-	this.iFoc = function () { return c.focus * energyModifier()};
+	this.iStr = function () { return c.attr[STRENGTH] * energyModifier()};
+	this.iSpd = function () { return c.attr[SPEED] * energyModifier()};
+	this.iFoc = function () { return c.attr[FOCUS] * energyModifier()};
+
+	this.getMaxEnergy = function () {
+		return this.attr[MAXENERGY];
+	}
+
+	this.getMaxHp = function () {
+		return this.attr[MAXHP];
+	}
 
 	this.hurt = function (damage) {
 		damage = Math.floor(damage);
@@ -286,7 +326,7 @@ function Creature (options) {
 	this.recoverEnergy = function (amount) {
 		amount = Math.floor(amount);
 		this.energy += amount;
-		if (this.energy > this.maxEnergy) this.energy = this.maxEnergy;
+		if (this.energy > this.attr[MAXENERGY]) this.energy = this.attr[MAXENERGY];
 	}
 
 	this.getPotionHp = function () {
@@ -323,18 +363,30 @@ function Creature (options) {
 
 	this.healFraction = function(amount) {
 		if (this.hp <= 0) return;
-		this.hp += Math.floor(amount * this.maxHp);
-		this.hp = Math.min(this.hp, this.maxHp);
+		this.hp += Math.floor(amount * this.attr[MAXHP]);
+		this.hp = Math.min(this.hp, this.attr[MAXHP]);
 	}
 
 	this.restoreEnergyFraction = function(amount) {
 		if (this.hp <= 0) return;
-		this.energy += Math.floor(amount * this.maxEnergy);
-		this.energy = Math.min(this.energy, this.maxEnergy);		
+		this.energy += Math.floor(amount * this.attr[MAXENERGY]);
+		this.energy = Math.min(this.energy, this.attr[MAXENERGY]);		
 	}
 
 	this.isAlive = function () {
 		return this.hp > 0;
+	}
+
+	this.queueLevelUp = function () {
+		this.levelUpPoints += 2;
+	}
+
+	this.levelUpAttribute = function(index) {
+		if (this.levelUpPoints <= 0) return;
+		this.attr[index] += 1;
+		this.levelUpPoints--;
+		this.hp = this.getMaxHp();
+		this.energy = this.getMaxEnergy();
 	}
 }
 
