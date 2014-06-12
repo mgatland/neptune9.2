@@ -23,7 +23,7 @@ body {
 }
 
 .gamescreen {
-	width: 900px;
+	width: 438px;
 	height: 670px;
 	border-top-right-radius: 100px;
 	border-bottom-right-radius: 100px;
@@ -32,29 +32,24 @@ body {
 }
 
 .cards {
-	width: 600px;
-	height: 400px;
+	width: 400px;
 	border-top-right-radius: 50px;
+	padding-top: 15px;
 	background-color: black;
 }
 
 .controls {
-	width: 600px;
-	height: 220px;
+	width: 400px;
+	height: 280px;
 	background-color: black;
 	border-bottom-right-radius: 50px;
-	padding-top: 20px;
+
+	font-size: 24px;
+	line-height: 27px;
 }
 
 .controlpanel {
-	width: 500px;
-	height: 160px;
-	font-size: 24px;
-	line-height: 27px;
 	padding: 20px;
-	display:inline-block;
-	border: 2px solid orange;
-	border-radius: 5px;
 	vertical-align:top;
 }
 
@@ -70,7 +65,7 @@ body {
 }
 
 .actionodds {
-	font-size: 14px;
+	font-size: 16px;
 	float: right;
 }
 
@@ -82,14 +77,14 @@ body {
 .card {
 	cursor: pointer;
 	position: relative; /* for contents */
-	width: 200px;
+	width: 135px;
 	height: 120px;
 	border: 2px solid orange;
 	background-color: #332100;
 	border-radius: 5px;
 	display:inline-block;
-	margin: 20px;
-	padding: 20px;
+	margin: 15px;
+	padding: 10px;
 	vertical-align:top
 }
 

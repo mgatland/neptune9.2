@@ -134,15 +134,9 @@ angular.module('neptune9', ['ngAnimate'])
 		keyboardService.setActions(1, keyCallback);
 	}
 
-	$scope.isMyTurn = function () {
-		return gameService.turn === player().card.num;
-	}
-
 	$scope.useAction = function (index) {
 		$scope.selectedAction = index;
-		if ($scope.isMyTurn()) {
-			gameService.useAction(player().card, index, player().getTargetNum());
-		}
+		gameService.useAction(player().card, index, player().getTargetNum());
 	}
 })
 

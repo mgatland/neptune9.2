@@ -1,10 +1,11 @@
 todo:
 
-[ ] different enemies with portraits
-[ ] experience and levelling
-	[ ] count XP
-	[ ] upgrade stats
-	[ ] give new abilities
+[ ] show XP progress towards next level
+[ ] change to phone screen resolution?
+[ ] show level up UI for a second after you allocate points
+	a fade-out transition?
+[ ] give new abilities as you level up
+
 ----
 
 [ ] networked multiplayer
@@ -16,7 +17,12 @@ todo:
 
 2014-06-12
 
-
+[x] experience and levelling
+	[x] count XP
+	[x] upgrade stats
+	[x] make UI make sense :/
+		show UI for 'last active player'
+		update 'last active player' on player turn start
 
 2014-06-11
 
