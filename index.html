@@ -12,6 +12,7 @@ icon: neptune9/neptune9-icon.png
 	<title>Neptune 9</title>
 	<!--<link href="//fonts.googleapis.com/css?family=Orbitron:400,500,700,900" rel="stylesheet" type="text/css">-->
 	<link rel="stylesheet" href="css/game.css">
+	<script data-main="js/game" src="js/peer.min.js"></script>
 	<script data-main="js/game" src="js/angular.js"></script>
 	<script data-main="js/game" src="js/angular-animate.js"></script>
 	<script data-main="js/game" src="js/game.js"></script>
@@ -19,7 +20,32 @@ icon: neptune9/neptune9-icon.png
 	{% include analytics.html %}
 </head>
 <body>
-	<div class="gamescreen">
+<!-- Setup -->
+	<div ng-controller="SetupCtrl" ng-if="!inGame">
+		<div ng-show="screen==='gametype'">
+			<div class="actionbutton" ng-click="localMode()">Local Game</div>
+			<div class="actionbutton" ng-click="networkMode()">Network Game</div>
+		</div>
+		<div ng-show="screen==='hostorjoin'">
+			<div class="actionbutton" ng-click="hostGame()">New Multiplayer Game</div>
+			<div class="actionbutton" ng-click="joinGame()">Join Existing Game</div>
+			<div class="actionbutton" ng-click="back()">Back</div>
+		</div>
+		<div ng-show="screen==='hostgame'">
+			<div>Hosting</div>
+			<div>Tell your friend to join game '{{hostingId}}'</div>
+			<div>The game will automatically start when they connect.</div>
+			<div class="actionbutton" ng-click="back()">Back</div>
+		</div>
+		<div ng-show="screen==='joingame'">
+			<div>Enter the game code to join the game</div>
+			<input ng-model='joiningId'>
+			<div class="actionbutton" ng-click="join()">Join {{joiningId}}</div>
+			<div class="actionbutton" ng-click="back()">Back</div>
+		</div>
+	</div>
+<!-- Gameplay -->
+	<div class="gamescreen" ng-show="inGame">
 		<div class="cards">
 			<div class="xp-bar">
 				<div 

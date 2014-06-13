@@ -2,6 +2,54 @@
 
 angular.module('neptune9', ['ngAnimate'])
 
+.factory('netService', function($rootScope) {
+	var ns = {};
+	var peer = null;
+	var id = Math.floor(Math.random()*10000);
+	ns.send = null;
+	var _connectCallback;
+	var _recieveCallback;
+
+	var setupConn = function (conn) {
+		ns.send = function (data) {
+			conn.send(data);
+			console.log("Sent ", data)
+		}
+
+		conn.on('data', function(data) {
+  		console.log('Received', data);
+  		_recieveCallback(data);
+		});
+	}
+
+	ns.init = function (connectCallback, recieveCallback) {
+		if (peer !== null) return;
+		_connectCallback = connectCallback;
+		_recieveCallback = recieveCallback;
+		peer = new Peer(id, {key: 'g9eb986tyyqr529'});
+
+		peer.on('connection', function(conn) {
+			console.log("Hosting a game!");
+			_connectCallback(true);
+			setupConn(conn, connectCallback, recieveCallback);
+		});
+	}
+
+	ns.getId = function () {
+		return id;
+	}
+
+	ns.join = function (otherId) {
+		var conn = peer.connect(otherId);
+		conn.on('open', function(){
+			console.log("Joined a game!");
+			_connectCallback(false);
+		});
+		setupConn(conn);
+	}
+
+	return ns;
+})
 .factory('gameService', function($rootScope) {
 
   var gs = {};
@@ -26,8 +74,6 @@ angular.module('neptune9', ['ngAnimate'])
 
     	$rootScope.showLevelUpUI = gs.players[gs.turn].levelUpState();
     }
-
-
 
     if (result === "skip") queueNextTurn(600);
     if (result === "endturn") queueNextTurn(800);
@@ -62,6 +108,7 @@ angular.module('neptune9', ['ngAnimate'])
 	$rootScope.players = gameService.players;
 	$rootScope.experienceProgress = gameService.experienceProgress;
 	$rootScope.showLevelUpUI = 0;
+	$rootScope.inGame = false;
 
 	$rootScope.turn = function () {
 		return gameService.turn;
@@ -93,13 +140,6 @@ angular.module('neptune9', ['ngAnimate'])
 		return activePlayer.getTargetNum() === $scope.card.num;
 	}
 
-})
-
-//This lets me inject html like the arrow key codes
-.filter('unsafe', function($sce) {
-    return function(val) {
-        return $sce.trustAsHtml(val);
-    };
 })
 
 .controller('ControlCtrl', function($scope, gameService, keyboardService) {
@@ -171,6 +211,45 @@ angular.module('neptune9', ['ngAnimate'])
 	$scope.levelUpAttribute = function (index) {
 		player().card.creature.levelUpAttribute(index);
 		updateUI();
+	}
+})
+
+.controller("SetupCtrl", function ($scope, $rootScope, netService) {
+	$scope.screen = "gametype";
+	$scope.hostingId = "";
+	$scope.joiningId = "";
+
+	var connCallback = function (isHosting) {
+		$rootScope.inGame = true;
+		$rootScope.$apply();
+	}
+
+	var dataCallback = function (data) {
+		console.log(data);
+	}
+
+	$scope.localMode = function () {
+		$rootScope.inGame = true;
+	}
+
+	$scope.networkMode = function () {
+		$scope.screen = "hostorjoin"
+	}
+	//network options
+	$scope.back = function () {
+		$scope.screen = "gametype"
+	}
+	$scope.hostGame = function () {
+		netService.init(connCallback, dataCallback);
+		$scope.screen = "hostgame"
+		$scope.hostingId = netService.getId();
+	}
+	$scope.joinGame = function () {
+		netService.init(connCallback, dataCallback);
+		$scope.screen = "joingame"
+	}
+	$scope.join = function () {
+		netService.join($scope.joiningId);
 	}
 })
 ;
