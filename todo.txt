@@ -1,7 +1,12 @@
 todo:
 
+[ ] enemy AI
+[ ] different moves for different enemies
+[ ] when a player dies, no longer show their controls (1 computer mode)
+[ ] when a player dies, don't replace them? or replace them with an enemy who attacks the surviving player correctly! (currently you get an AI ally)
 [ ] easier to know what actions other people took, especially when they miss.
 [ ] on one computer, make both players use the same target
+[ ] don't let enemies win potions by killing players! lol
 
 [x] give new abilities as you level up
 	[x] heal

@@ -120,7 +120,7 @@ function Game() {
 
   	if (creature.hp <= 0) {
   		creature.deadTime++;
-  		if (creature.deadTime == 3) {
+  		if (creature.deadTime == 2) {
   			//create new creature
   			spawnCreature(this.turn);
   		}
