@@ -43,6 +43,7 @@ function Game() {
   	p.card.creature.availableSkills = [];
   	p.card.creature.availableSkills.push(chargeMove);
   	p.card.creature.availableSkills.push(healMove);
+  	p.card.creature.availableSkills.push(drainMove);
   });
 
   //let every card know its index.
@@ -220,6 +221,24 @@ var healMove = new Move(
 			}
 		}
 	);
+
+var drainMove = new Move(
+		{
+			name: "Drain",
+			act: function(user, target, chance) {
+				if (Math.random() < chance) {
+					target.useEnergy(user.iFoc()/2);
+					addFx(target, "dead"); //FIXME
+				} else {
+					addFx(target, "miss");
+				}
+			},
+			hitChance: function (user, target) {
+				var chance = (user.iFoc() / (user.iFoc() + target.iFoc()));
+				return Math.min(chance, 1);
+			}
+		}
+	)
 
 var normalMoves = [];
 normalMoves.push(new Move(

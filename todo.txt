@@ -3,13 +3,13 @@ todo:
 [ ] improve current target indicator
 [ ] on one computer, make both players use the same target
 [x] give new abilities as you level up
-	[ ] attack both
 	[x] heal
-	[ ] drain energy
-	[ ] heal both
-	[ ] make potion
+	[x] drain energy
 	[ ] precision
+	[ ] make potion
 	[ ] poison
+	[ ] heal both
+	[ ] attack both
 
 [ ] networked multiplayer
 
