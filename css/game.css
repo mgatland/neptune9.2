@@ -137,8 +137,6 @@ input {
 
 .cardfx {
 	position: absolute;
-	width: 240px;
-	height: 160px;
 	top: 0;
 	left: 0;
 	opacity: 1;

@@ -196,7 +196,7 @@ var useHpPotionMove = new Move(
 		act: function (user, target, chance) {
 			if (user.usePotionHp()) {
 				target.healFraction(0.5);
-				addFx(target, "rest");
+				addFx(target, "heal");
 			}
 		}
 	}
@@ -210,7 +210,7 @@ var useEnergyPotionMove = new Move(
 		act: function (user, target, chance) {
 			if (user.usePotionEnergy()) {
 				target.restoreEnergyFraction(1);
-				addFx(target, "rest");
+				addFx(target, "energy");
 			}
 		}
 	}
@@ -223,9 +223,9 @@ var healMove = new Move(
 			act: function(user, target, chance) {
 				if (random.value() < chance) {
 					target.healAmount(user.iFoc());
-					addFx(target, "rest");
+					addFx(target, "heal");
 				} else {
-					addFx(target, "miss");
+					addFx(target, "heal-miss");
 				}
 			},
 			hitChance: function(user, target) {
@@ -241,9 +241,9 @@ var drainMove = new Move(
 			act: function(user, target, chance) {
 				if (random.value() < chance) {
 					target.useEnergy(user.iFoc()/2);
-					addFx(target, "dead"); //FIXME
+					addFx(target, "drain");
 				} else {
-					addFx(target, "miss");
+					addFx(target, "drain-miss");
 				}
 			},
 			hitChance: function (user, target) {
@@ -263,7 +263,7 @@ normalMoves.push(new Move(
 				target.hurt(Math.max(user.iStr() / 8, 1));
 				addFx(target, "shot");
 			} else {
-				addFx(target, "miss");
+				addFx(target, "shot-miss");
 			}
 			user.useEnergy(3);
 		}
@@ -279,7 +279,7 @@ normalMoves.push(new Move({name:"Whack!", bonusToHit: 0.25, act: function (user,
 		target.useEnergy(Math.max(user.iStr() / 8, 1));
 		addFx(target, "whack");
 	} else {
-		addFx(target,"miss");
+		addFx(target,"shot-miss");
 	}
 	user.useEnergy(8);
 }}));
