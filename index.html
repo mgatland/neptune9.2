@@ -2,8 +2,8 @@
 title: Neptune 9.2
 categories: [games]
 description: A shootout in a space-corridor for 2 players.
-order: 9
-date: 2014-01-27
+order: 10
+date: 2014-06-14
 icon: neptune9/neptune9-icon.png
 ---
 <html lang="en-US" ng-app="neptune9">
@@ -21,6 +21,7 @@ icon: neptune9/neptune9-icon.png
 	{% include analytics.html %}
 </head>
 <body>
+{% raw %}
 <!-- Setup -->
 	<div class="setupscreen" ng-controller="SetupCtrl" ng-if="!inGame">
 		<div ng-show="screen==='gametype'">
@@ -132,5 +133,6 @@ icon: neptune9/neptune9-icon.png
 		</div>
 	</div>
 	<div class="lines"></div>
+{% endraw %}
 </body>
 </html>
