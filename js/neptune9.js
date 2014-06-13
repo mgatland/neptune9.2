@@ -151,7 +151,7 @@ angular.module('neptune9', ['ngAnimate'])
 
 })
 
-.controller('ControlCtrl', function($scope, gameService, keyboardService) {
+.controller('ControlCtrl', function($scope, gameService, keyboardService, $rootScope) {
 //	keys[0] = ['w', 's', 'a', 'd'];
 //	keys[1] = ['&#8593;', '&#8595;', '&#8592;', '&#8594;'];
 	$scope.selectedAction = 0;
@@ -187,6 +187,9 @@ angular.module('neptune9', ['ngAnimate'])
 	$scope.init = function () {
 		keyboardService.setActions(0, keyCallback);
 		keyboardService.setActions(1, keyCallback);
+		keyboardService.setSwitch(function () {
+			return $rootScope.inGame;
+		});
 	}
 
 	$scope.useAction = function (index) {

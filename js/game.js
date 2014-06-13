@@ -499,6 +499,11 @@ if (typeof KeyEvent == "undefined") {
 var Keyboard = function () {
 	var actions = [];
 	console.log("New Keyboard");
+	var switchFunc = function () {return true};
+
+	this.setSwitch = function(func) {
+		switchFunc = func;
+	}
 
 	this.setActions = function(i, callback) {
 		var newActions = [];
@@ -520,6 +525,7 @@ var Keyboard = function () {
 	}
 
   window.addEventListener("keydown", function (e) {
+  	if (!switchFunc()) return;
   	actions.forEach(function (actionSet) {
   		var action = actionSet.map[e.keyCode];
   		if (action != null) {
