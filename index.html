@@ -59,7 +59,7 @@ icon: neptune9/neptune9-icon.png
 		<div class="controls">
 			<div class="controlpanel"
 			ng-controller="ControlCtrl"
-			ng-show="!showLevelUpUI"
+			ng-show="showLevelUpUI===0"
 			ng-init="init()">
 				<div 
 				class="actionbutton"
@@ -72,7 +72,7 @@ icon: neptune9/neptune9-icon.png
 			</div>
 			<div ng-controller="LevelUpCtrl">
 				<div 
-					ng-show="showLevelUpUI"
+					ng-show="showLevelUpUI===1"
 					class="controlpanel levelup">
 					<div>Level up! ({{player().card.creature.levelUpPoints}} points left)</div>
 					<div 
@@ -81,6 +81,19 @@ icon: neptune9/neptune9-icon.png
 						ng-click="levelUpAttribute($index)">
 						{{attr}}
 						<span class="actionodds">{{player().card.creature.attr[$index]}}</span>
+					</div>
+				</div>
+			</div>
+			<div ng-controller="LevelUpCtrl">
+				<div 
+					ng-show="showLevelUpUI===2"
+					class="controlpanel levelup">
+					<div>Level up! Choose a new skill:</div>
+					<div 
+						class="actionbutton"
+						ng-repeat="skill in player().card.creature.availableSkills" 
+						ng-click="levelUpSkill($index)">
+						{{skill.name}}
 					</div>
 				</div>
 			</div>

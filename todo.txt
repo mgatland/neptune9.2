@@ -1,10 +1,16 @@
 todo:
 
+[ ] improve current target indicator
+[ ] on one computer, make both players use the same target
 [ ] give new abilities as you level up
 	[ ] attack both
 	[ ] heal
+	[ ] drain energy
 	[ ] heal both
-	[ ] drain
+	[ ] make potion
+	[ ] precision
+	[ ] poison
+
 [ ] networked multiplayer
 
 ----
@@ -12,8 +18,6 @@ todo:
 [ ] attack sounds
 [ ] recolor images to fit the color scheme?
 [ ] put static over whole screen or just images
-[ ] more Star Trek style UI
-	horizontal black bars to divide up the border
 
 2014-06-13
 

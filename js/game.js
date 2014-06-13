@@ -4,6 +4,7 @@ function Game() {
 	var _this = this;
 	var moveIsUsed = false;
 
+	var experienceLevel = 1;
 	this.experience = 0;
 	this.experienceTarget = 2;
 
@@ -12,6 +13,7 @@ function Game() {
 		var unallocatedPoints = false;
 		this.players.forEach(function (p) {
 			if (p.card.creature.levelUpPoints > 0) unallocatedPoints = true;
+			if (p.card.creature.levelUpSkillPoints > 0) unallocatedPoints = true;
 		});
 		if (unallocatedPoints) {
 			return 100;
@@ -36,6 +38,12 @@ function Game() {
   this.players = [];
   this.players[0] = new Player(this.cards, {card: this.cards[0], targetNum: 2});
   this.players[1] = new Player(this.cards, {card: this.cards[1], targetNum: 3});
+
+  this.cards[0].creature.availableSkills = [];
+  this.cards[0].creature.availableSkills.push(chargeMove);
+
+	this.cards[1].creature.availableSkills = [];
+  this.cards[1].creature.availableSkills.push(chargeMove);
 
   //let every card know its index.
   for (var i = 0; i < 4; i++) {
@@ -76,10 +84,11 @@ function Game() {
     }
 
     if (this.experience >= this.experienceTarget) {
+    	experienceLevel++;
     	this.experience -= this.experienceTarget;
     	this.experienceTarget += 2;
 	    this.players.forEach(function (player) {
-	      player.card.creature.queueLevelUp();
+	      player.card.creature.queueLevelUp(experienceLevel % 2 == 0);
 	    });
     }
 
@@ -217,10 +226,10 @@ normalMoves.push(new Move({name:"Whack!", bonusToHit: 0.25, act: function (user,
 	}
 	user.useEnergy(8);
 }}));
-normalMoves.push(new Move({name:"Charge", bonusToHit: 1, act: function (user, target) {
+var chargeMove = new Move({name:"Charge", bonusToHit: 1, act: function (user, target) {
 	user.texts.push("Charged!");
 	user.name += "!";
-}}));
+}});
 
 //passing in _cards is a hack so we can update action odds mid-turn
 //fixme: only do it once at the end of a turn, called by gameservice,
@@ -256,8 +265,10 @@ function Player(_cards, options) {
 		return _targetNum;
 	}
 
-	this.canLevelNow = function () {
-		return (this.card.creature.levelUpPoints > 0);
+	this.levelUpState = function () {
+		if (this.card.creature.levelUpPoints > 0) return 1;
+		if (this.card.creature.levelUpSkillPoints > 0) return 2;
+		return 0;
 	}
 
 	//initialize target
@@ -289,6 +300,7 @@ function Creature (options) {
 	this.potions.energy = 0;
 
 	this.levelUpPoints = 0;
+	this.levelUpSkillPoints = 0;
 
 	this.texts = [];
 	this.fx = [];
@@ -389,8 +401,12 @@ function Creature (options) {
 		return this.hp > 0;
 	}
 
-	this.queueLevelUp = function () {
-		this.levelUpPoints += 2;
+	this.queueLevelUp = function (giveSkill) {
+		if (giveSkill && this.availableSkills.length > 0) {
+			this.levelUpSkillPoints += 1;
+		} else {
+			this.levelUpPoints += 2;
+		}
 	}
 
 	this.levelUpAttribute = function(index) {
@@ -399,6 +415,13 @@ function Creature (options) {
 		this.levelUpPoints--;
 		this.hp = this.getMaxHp();
 		this.energy = this.getMaxEnergy();
+	}
+
+	this.levelUpSkill = function (index) {
+		if (this.levelUpSkillPoints <= 0) return;
+		this.levelUpSkillPoints--;
+		this.moves.push(this.availableSkills[index]);
+		this.availableSkills.splice(index, 1);
 	}
 }
 
