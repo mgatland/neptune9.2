@@ -1,7 +1,7 @@
 todo:
 
 [ ] show XP progress towards next level
-[ ] change to phone screen resolution?
+
 [ ] show level up UI for a second after you allocate points
 	a fade-out transition?
 [ ] give new abilities as you level up
@@ -17,6 +17,7 @@ todo:
 
 2014-06-12
 
+[x] change to phone screen resolution
 [x] experience and levelling
 	[x] count XP
 	[x] upgrade stats

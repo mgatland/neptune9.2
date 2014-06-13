@@ -54,7 +54,7 @@ icon: neptune9/neptune9-icon.png
 		<div class="controls">
 			<div class="controlpanel"
 			ng-controller="ControlCtrl"
-			ng-show="!showLevelUpUI()"
+			ng-show="!showLevelUpUI"
 			ng-init="init()">
 				<div 
 				class="actionbutton"
@@ -67,9 +67,9 @@ icon: neptune9/neptune9-icon.png
 			</div>
 			<div ng-controller="LevelUpCtrl">
 				<div 
-					ng-show="showLevelUpUI()"
-					class="controlpanel">
-					<div>Choose an attribute to improve:</div>
+					ng-show="showLevelUpUI"
+					class="controlpanel levelup">
+					<div>Level up! ({{player().card.creature.levelUpPoints}} points left)</div>
 					<div 
 						class="actionbutton"
 						ng-repeat="attr in player().card.creature.attrNames" 

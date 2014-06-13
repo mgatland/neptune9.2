@@ -23,7 +23,13 @@ angular.module('neptune9', ['ngAnimate'])
     gs.turn = game.turn;
     if (game.players[gs.turn] != undefined) {
     	gs.activePlayer = gs.turn;
+
+    	if (gs.players[gs.turn].canLevelNow()) {
+    		$rootScope.showLevelUpUI = true;
+    	}
     }
+
+
 
     if (result === "skip") queueNextTurn(600);
     if (result === "endturn") queueNextTurn(800);
@@ -53,10 +59,8 @@ angular.module('neptune9', ['ngAnimate'])
 	$rootScope.cards = gameService.cards;
 	$rootScope.players = gameService.players;
 
-	$rootScope.showLevelUpUI = function () {
-		return gameService.players[gameService.activePlayer].canLevelNow()
-			&& !gameService.moveIsUsed();
-	}
+	$rootScope.showLevelUpUI = false;
+
 	$rootScope.turn = function () {
 		return gameService.turn;
 	}
@@ -140,7 +144,7 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 })
 
-.controller('LevelUpCtrl', function($scope, gameService) {
+.controller('LevelUpCtrl', function($scope, gameService, $rootScope) {
 
 	var player = function () {
 		return gameService.players[gameService.activePlayer];
@@ -149,6 +153,12 @@ angular.module('neptune9', ['ngAnimate'])
 
 	$scope.levelUpAttribute = function (index) {
 		player().card.creature.levelUpAttribute(index);
+		if (!player().canLevelNow()) {
+			setTimeout(function () {
+				$rootScope.showLevelUpUI = false;
+				$rootScope.$apply();
+			}, 500);
+    }
 	}
 })
 ;

@@ -38,6 +38,8 @@ body {
 	background-color: black;
 }
 
+/* controls */
+
 .controls {
 	width: 400px;
 	height: 280px;
@@ -74,6 +76,12 @@ body {
 	font-weight: bold;
 }
 
+.levelup .actionbutton {
+	background-color: #af7;
+}
+
+/* end of controls */
+
 .card {
 	cursor: pointer;
 	position: relative; /* for contents */
@@ -108,17 +116,6 @@ body {
 
 .card.turn {
 	background-color: #400;
-}
-
-.lines {
-	pointer-events: none;
-}
-
-.line {
-	padding:0px;
-	margin:0px;
-	line-height:1px;
-	position:absolute;
 }
 
 /* Portrait */
