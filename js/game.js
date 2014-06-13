@@ -38,10 +38,10 @@ function Game() {
 	this.turn = 0;
 
 //attrs: hp, energy, strength, speed, focus
-	var weewit = {name:"Weewit", img:"weewit.png", attr:[3, 10, 5, 5, 0]};
-	var gobnit = {name:"Gobnit", img:"gobnit.png", attr:[4,  6, 6, 9, 0]};
-	var leepig = {name: "Leepig", img: "leepig.png", attr:[10,  6, 8, 10, 10]};
-	var dopnot = {name: "Dopnot", img: "dopnot.png", attr:[10,  10, 12, 9, 10]};
+	var weewit = {name:"Weewit", img:"weewit.png", attr:[5, 6, 5, 5, 1]};
+	var gobnit = {name:"Gobnit", img:"gobnit.png", attr:[4,  10, 6, 10, 1]};
+	var leepig = {name: "Leepig", img: "leepig.png", attr:[6,  5, 8, 7, 10]};
+	var dopnot = {name: "Dopnot", img: "dopnot.png", attr:[8,  9, 12, 8, 10]};
 
   this.cards = [{}, {}, {}, {}];
   this.cards[0].creature = new Creature({name:"Kathee", img:"spy.png", attr:[10, 10, 10, 10, 10], ai: null, team: "good"});
@@ -229,7 +229,7 @@ var healMove = new Move(
 				user.useEnergy(6);
 			},
 			hitChance: function(user, target) {
-				var chance = (user.iFoc() / (user.iFoc() + 10));
+				var chance = (user.iFoc() / (user.iFoc() + 6));
 				return Math.min(chance, 1);
 			}
 		}
