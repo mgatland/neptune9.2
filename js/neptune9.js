@@ -58,6 +58,7 @@ angular.module('neptune9', ['ngAnimate'])
 
   var gs = {};
   var game = new Game();
+  var isMultiplayer = false;
 
   gs.turn = 0; //todo: get rid of this, push all code that uses it into game.js
   gs.activePlayer = 0;
@@ -85,7 +86,7 @@ angular.module('neptune9', ['ngAnimate'])
   }
 
   gs.useAction = function(userCard, actionNum, targetNum, isRemote) {
-  	if (!isRemote) {
+  	if (!isRemote && isMultiplayer) {
   		netService.send(["useAction", userCard.num, actionNum, targetNum])
   	}
     console.log("gs.useAction");
@@ -95,14 +96,14 @@ angular.module('neptune9', ['ngAnimate'])
   }
 
   gs.levelUpSkill = function (player, index, isRemote) {
-  	if (!isRemote) {
+  	if (!isRemote && isMultiplayer) {
   		netService.send(["levelUpSkill", player.card.num, index]);
   	}
   	player.card.creature.levelUpSkill(index);
   }
 
   gs.levelUpAttribute = function (player, index, isRemote) {
-  	if (!isRemote) {
+  	if (!isRemote && isMultiplayer) {
   		netService.send(["levelUpAttribute", player.card.num, index]);
   	}
   	player.card.creature.levelUpAttribute(index);
@@ -123,6 +124,7 @@ angular.module('neptune9', ['ngAnimate'])
   		gs.players[0].isLocal = false;
   	}
   	gs.activePlayer = num;
+  	isMultiplayer = true;
   }
 
   var networkCallback = function (args) {
