@@ -2,9 +2,9 @@ todo:
 
 [ ] improve current target indicator
 [ ] on one computer, make both players use the same target
-[ ] give new abilities as you level up
+[x] give new abilities as you level up
 	[ ] attack both
-	[ ] heal
+	[x] heal
 	[ ] drain energy
 	[ ] heal both
 	[ ] make potion

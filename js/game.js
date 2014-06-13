@@ -39,11 +39,11 @@ function Game() {
   this.players[0] = new Player(this.cards, {card: this.cards[0], targetNum: 2});
   this.players[1] = new Player(this.cards, {card: this.cards[1], targetNum: 3});
 
-  this.cards[0].creature.availableSkills = [];
-  this.cards[0].creature.availableSkills.push(chargeMove);
-
-	this.cards[1].creature.availableSkills = [];
-  this.cards[1].creature.availableSkills.push(chargeMove);
+  this.players.forEach(function (p) {
+  	p.card.creature.availableSkills = [];
+  	p.card.creature.availableSkills.push(chargeMove);
+  	p.card.creature.availableSkills.push(healMove);
+  });
 
   //let every card know its index.
   for (var i = 0; i < 4; i++) {
@@ -139,16 +139,23 @@ function addFx(character, fxName) {
 	}, 400);
 }
 
+function makeHitDecider(bonusToHit) {
+	return function (user, target) {
+  	var chance = bonusToHit + (1 - bonusToHit) * (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
+		return Math.min(chance, 1);
+	}
+}
+
 function Move(options) {
 	//configurable parts
 	this.name = options.name;
-	var bonusToHit = options.bonusToHit;
 	var action = options.act;
 	var validTargets = options.validTargets;
 
-	this.hitChance = function(user, target) {
-  	var chance = bonusToHit + (1 - bonusToHit) * (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
-		return Math.min(chance, 1);
+	if (options.hitChance) {
+		this.hitChance = options.hitChance;
+	} else {
+		this.hitChance = makeHitDecider(options.bonusToHit);
 	}
 
 	var fixTarget = function (user, target) {
@@ -195,6 +202,24 @@ var useEnergyPotionMove = new Move(
 	}
 );
 
+var healMove = new Move(
+		{
+			name: "Heal",
+			validTargets: "friends",
+			act: function(user, target, chance) {
+				if (Math.random() < chance) {
+					target.healAmount(user.iFoc());
+					addFx(target, "rest");
+				} else {
+					addFx(target, "miss");
+				}
+			},
+			hitChance: function(user, target) {
+				var chance = (user.iFoc() / (user.iFoc() + 10));
+				return Math.min(chance, 1);
+			}
+		}
+	);
 
 var normalMoves = [];
 normalMoves.push(new Move(
@@ -385,10 +410,15 @@ function Creature (options) {
 		return true;
 	}
 
-	this.healFraction = function(amount) {
+	this.healFraction = function(fraction) {
+		var amount = fraction * this.attr[MAXHP];
+		this.healAmount(amount);
+	}
+
+	this.healAmount = function(amount) {
 		if (this.hp <= 0) return;
 		this.hp += Math.floor(amount * this.attr[MAXHP]);
-		this.hp = Math.min(this.hp, this.attr[MAXHP]);
+		this.hp = Math.min(this.hp, this.attr[MAXHP]);		
 	}
 
 	this.restoreEnergyFraction = function(amount) {
