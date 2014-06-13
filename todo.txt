@@ -1,13 +1,9 @@
 todo:
 
-[ ] fx images
+[ ] improve current target indicator
 [ ] change starting stregth etc to 10 not 100
-[ ] make it easier to know when it's your turn
 
 [ ] easier to know what actions other people took, especially when they miss.
-
-
-[ ] improve current target indicator
 [ ] on one computer, make both players use the same target
 
 [x] give new abilities as you level up
@@ -27,6 +23,9 @@ todo:
 [ ] put static over whole screen or just images
 
 2014-06-13
+
+[x] images for each move
+[x] make it easier to know when it's your turn
 
 [x] networked multiplayer
 	[x] config screens

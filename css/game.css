@@ -133,6 +133,7 @@ input {
 	border: 2px solid orange;
 	background-color: #332100;
 	border-radius: 5px;
+	border-top-right-radius: 50px;
 	display:inline-block;
 	margin: 15px;
 	padding: 10px;
