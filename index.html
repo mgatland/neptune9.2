@@ -79,7 +79,6 @@ icon: neptune9/neptune9-icon.png
 					ng-if="card.creature.potions.energy > 0">
 					E Potions: {{card.creature.potions.energy}}
 				</div>
-				<div class="msg" ng-repeat="text in card.creature.texts">{{text}}</div>
 				<div ng-if="isActiveTarget()">(Target)</div>
 				<img class="cardfx" 
 					ng-repeat="fx in card.creature.fx"

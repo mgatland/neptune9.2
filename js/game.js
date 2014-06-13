@@ -117,8 +117,6 @@ function Game() {
   	moveIsUsed = false;
   	var creature = this.cards[this.turn].creature;
 
-  	creature.texts.length = 0; //clear messages
-
   	if (creature.hp <= 0) {
   		creature.deadTime++;
   		if (creature.deadTime == 3) {
@@ -271,7 +269,6 @@ normalMoves.push(new Move(
 	));
 normalMoves.push(new Move({name:"Rest", bonusToHit: 1, act: function (user, target) {
 	addFx(user, "rest");
-	user.texts.push("Rested");
 }}));
 normalMoves.push(new Move({name:"Whack!", bonusToHit: 0.25, act: function (user, target, chance) {
 	if (random.value() < chance) {
@@ -355,7 +352,6 @@ function Creature (options) {
 	this.levelUpPoints = 0;
 	this.levelUpSkillPoints = 0;
 
-	this.texts = [];
 	this.fx = [];
 
 	this.moves = [];
