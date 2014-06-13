@@ -8,7 +8,8 @@ angular.module('neptune9', ['ngAnimate'])
 	var id = Math.floor(Math.random()*10000);
 	ns.send = null;
 	var _connectCallback;
-	var _recieveCallback;
+	var _reciever = {};
+	_reciever.callback = function () {console.log("PROBLEM: trying to recieve data but there is no callback to call");};
 
 	var setupConn = function (conn) {
 		ns.send = function (data) {
@@ -17,21 +18,24 @@ angular.module('neptune9', ['ngAnimate'])
 		}
 
 		conn.on('data', function(data) {
-  		console.log('Received', data);
-  		_recieveCallback(data);
+  			console.log('Received', data);
+  			_reciever.callback(data);
 		});
 	}
 
-	ns.init = function (connectCallback, recieveCallback) {
+	ns.setCallback = function (callback) {
+		_reciever.callback = callback;
+	}
+
+	ns.init = function (connectCallback) {
 		if (peer !== null) return;
 		_connectCallback = connectCallback;
-		_recieveCallback = recieveCallback;
 		peer = new Peer(id, {key: 'g9eb986tyyqr529'});
 
 		peer.on('connection', function(conn) {
 			console.log("Hosting a game!");
 			_connectCallback(true);
-			setupConn(conn, connectCallback, recieveCallback);
+			setupConn(conn);
 		});
 	}
 
@@ -50,7 +54,7 @@ angular.module('neptune9', ['ngAnimate'])
 
 	return ns;
 })
-.factory('gameService', function($rootScope) {
+.factory('gameService', function($rootScope, netService) {
 
   var gs = {};
   var game = new Game();
@@ -80,11 +84,28 @@ angular.module('neptune9', ['ngAnimate'])
   	$rootScope.$apply();
   }
 
-  gs.useAction = function(userCard, actionNum, targetNum) {
+  gs.useAction = function(userCard, actionNum, targetNum, isRemote) {
+  	if (!isRemote) {
+  		netService.send(["useAction", userCard.num, actionNum, targetNum])
+  	}
     console.log("gs.useAction");
     if (game.useAction(userCard, actionNum, targetNum)) {
       queueNextTurn(800);
     }
+  }
+
+  gs.levelUpSkill = function (player, index, isRemote) {
+  	if (!isRemote) {
+  		netService.send(["levelUpSkill", player.card.num, index]);
+  	}
+  	player.card.creature.levelUpSkill(index);
+  }
+
+  gs.levelUpAttribute = function (player, index, isRemote) {
+  	if (!isRemote) {
+  		netService.send(["levelUpAttribute", player.card.num, index]);
+  	}
+  	player.card.creature.levelUpAttribute(index);
   }
 
   gs.moveIsUsed = function () {
@@ -103,6 +124,24 @@ angular.module('neptune9', ['ngAnimate'])
   	}
   	gs.activePlayer = num;
   }
+
+  var networkCallback = function (args) {
+  	if (args[0]==="useAction") {
+  		var cardNum = args[1];
+  		gs.useAction(gs.cards[cardNum], args[2], args[3], true);
+  	} else if (args[0]==="levelUpSkill") {
+  		var playerNum = args[1];
+  		gs.levelUpSkill(gs.players[playerNum], args[2], true);
+  	} else if (args[0]==="levelUpAttribute") {
+  		var playerNum = args[1];
+  		gs.levelUpAttribute(gs.players[playerNum], args[2], true);
+  	} else {
+  		console.log("Invalid data recieved", args);
+  	}
+  	$rootScope.$apply();
+  }
+
+  netService.setCallback(networkCallback);
 
   return gs;
 })
@@ -216,12 +255,12 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 
 	$scope.levelUpSkill = function (index) {
-		player().card.creature.levelUpSkill(index);
+		gameService.levelUpSkill(player(), index);
 		updateUI();
 	}
 
 	$scope.levelUpAttribute = function (index) {
-		player().card.creature.levelUpAttribute(index);
+		gameService.levelUpAttribute(player(), index);
 		updateUI();
 	}
 })

@@ -14,12 +14,9 @@ todo:
 	[ ] detonate dead
 
 [ ] networked multiplayer
-	[ ] Options:
-		Local game
-		Multiplayer (Create game)
-		Multiplayer (Join game)
-
-		[ ] seedable random number generator
+	[x] Send actions to remote
+	[x] Perform remote actions
+	[ ] Use seedable random number generator
 
 ----
 
