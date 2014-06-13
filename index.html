@@ -98,6 +98,9 @@ icon: neptune9/neptune9-icon.png
 				{{action.name}}
 				<span class="actionodds">{{player().actionOdds[$index]}}</span>
 				</div>
+				<p ng-if="player().card.creature.moves.length < 3">
+					You are {{player().card.creature.name}}. On your turn, click on creature to target, then click on an action like 'Shoot'.
+				</p>
 			</div>
 			<div ng-controller="LevelUpCtrl">
 				<div 

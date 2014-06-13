@@ -1,22 +1,31 @@
 todo:
 
+Interestingness:
 [ ] enemy AI
 [ ] different moves for different enemies
+New moves:
+	[ ] precision (stat boost for next 2 turns)
+	[ ] attack both
+	[ ] heal both
+	[ ] turn dead enemy into a potion
+	[ ] poison (take damage every turn for a few turns)
+	[ ] freeze\stun (skip a turn, and defence is lowered to zero.)
+	[ ] detonate dead
+
+Player death:
 [ ] when a player dies, no longer show their controls (1 computer mode)
 [ ] when a player dies, don't replace them? or replace them with an enemy who attacks the surviving player correctly! (currently you get an AI ally)
-[ ] easier to know what actions other people took, especially when they miss.
-[ ] on one computer, make both players use the same target
 [ ] don't let enemies win potions by killing players! lol
 
-[x] give new abilities as you level up
-	[x] heal
-	[x] drain energy
-	[ ] precision
-	[ ] make potion
-	[ ] poison
-	[ ] heal both
-	[ ] attack both
-	[ ] detonate dead
+UI:
+[ ] easier to know what actions other people took, especially when they miss.
+[ ] on one computer, make both players use the same target
+[ ] remove the yellow border around the page, it's not functional.
+
+
+
+dev:
+	tidy up the code.
 
 ----
 
@@ -30,6 +39,10 @@ todo:
 [x] make it easier to know when it's your turn
 [x] easier to see current target indicator
 [x] change starting strength etc to 10 not 100
+
+[x] give new abilities as you level up
+	[x] heal
+	[x] drain energy
 
 [x] networked multiplayer
 	[x] config screens
