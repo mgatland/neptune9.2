@@ -163,6 +163,12 @@ angular.module('neptune9', ['ngAnimate'])
 	$rootScope.turn = function () {
 		return gameService.turn;
 	}
+
+	$rootScope.isLocalTurn = function () {
+		var player = $rootScope.players[gameService.turn];
+		if (player) return player.isLocal;
+		return false;
+	}
 })
 
 .controller('CardCtrl', function($scope, gameService) {

@@ -105,6 +105,10 @@ input {
 	cursor: pointer;
 }
 
+.disabled .actionbutton {
+	background-color: #806200;
+}
+
 .actionodds {
 	font-size: 16px;
 	float: right;

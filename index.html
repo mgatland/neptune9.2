@@ -86,7 +86,7 @@ icon: neptune9/neptune9-icon.png
 					ng-src="art/{{fx.sprite}}">
 			</div>
 		</div>
-		<div class="controls">
+		<div class="controls" ng-class="{disabled: !isLocalTurn()}">
 			<div class="controlpanel"
 			ng-controller="ControlCtrl"
 			ng-show="showLevelUpUI===0"
