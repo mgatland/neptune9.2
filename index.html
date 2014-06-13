@@ -21,6 +21,11 @@ icon: neptune9/neptune9-icon.png
 <body>
 	<div class="gamescreen">
 		<div class="cards">
+			<div class="xp-bar">
+				<div 
+				class="xp-bar-inside"
+				style="width:{{experienceProgress()}}%"></div>
+			</div>
 			<div class="card" 
 			ng-class="{turn: isMyTurn()}" 
 			ng-repeat="card in cards" 

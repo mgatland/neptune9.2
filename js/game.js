@@ -7,6 +7,18 @@ function Game() {
 	this.experience = 0;
 	this.experienceTarget = 2;
 
+	this.experienceProgress = function () {
+		//show a full bar if there are unallocated points
+		var unallocatedPoints = false;
+		this.players.forEach(function (p) {
+			if (p.card.creature.levelUpPoints > 0) unallocatedPoints = true;
+		});
+		if (unallocatedPoints) {
+			return 100;
+		}
+		return Math.floor(100 * this.experience / this.experienceTarget);
+	}
+
 	this.turn = 0;
 
 //attrs: hp, energy, strength, speed, focus

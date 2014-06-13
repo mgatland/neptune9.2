@@ -47,6 +47,10 @@ angular.module('neptune9', ['ngAnimate'])
   	return game.moveIsUsed();
   }
 
+  gs.experienceProgress = function () {
+  	return game.experienceProgress();
+  }
+
   return gs;
 })
  
@@ -58,7 +62,7 @@ angular.module('neptune9', ['ngAnimate'])
 .run(function ($rootScope, gameService) {
 	$rootScope.cards = gameService.cards;
 	$rootScope.players = gameService.players;
-
+	$rootScope.experienceProgress = gameService.experienceProgress;
 	$rootScope.showLevelUpUI = false;
 
 	$rootScope.turn = function () {

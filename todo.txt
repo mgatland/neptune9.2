@@ -1,19 +1,24 @@
 todo:
 
-[ ] show XP progress towards next level
-
-[ ] show level up UI for a second after you allocate points
-	a fade-out transition?
 [ ] give new abilities as you level up
+	[ ] attack both
+	[ ] heal
+	[ ] heal both
+	[ ] drain
+[ ] networked multiplayer
 
 ----
-
-[ ] networked multiplayer
 
 [ ] attack sounds
 [ ] recolor images to fit the color scheme?
 [ ] put static over whole screen or just images
 [ ] more Star Trek style UI
+	horizontal black bars to divide up the border
+
+2014-06-13
+
+[x] show level up UI for a second after you allocate points
+[x] show XP progress towards next level
 
 2014-06-12
 

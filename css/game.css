@@ -24,11 +24,12 @@ body {
 
 .gamescreen {
 	width: 438px;
-	height: 670px;
+	/*height: 670px;*/
 	border-top-right-radius: 100px;
 	border-bottom-right-radius: 100px;
 	background-color: orange;
 	padding-top: 25px;
+	padding-bottom: 25px;
 }
 
 .cards {
@@ -157,6 +158,27 @@ body {
 	background-color: #af7;
 	position: absolute;
 	bottom: 0;
+}
+
+/* Experience progress bar */
+
+.xp-bar {
+	width: 344px;
+	height: 8px;
+	position: relative;
+	border: 2px solid orange;
+	background-color: black;
+	display: inline-block;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	margin-left: 15px;
+}
+
+.xp-bar-inside {
+	height: 100%;
+	background-color: #af7;
+	position: absolute;
+	left: 0;
 }
 
 /* Animations */
