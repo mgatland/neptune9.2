@@ -55,7 +55,6 @@ function Game() {
 
   this.players.forEach(function (p) {
   	p.card.creature.availableSkills = [];
-  	p.card.creature.availableSkills.push(chargeMove);
   	p.card.creature.availableSkills.push(healMove);
   	p.card.creature.availableSkills.push(drainMove);
   });
@@ -284,10 +283,6 @@ normalMoves.push(new Move({name:"Whack!", bonusToHit: 0.25, act: function (user,
 	}
 	user.useEnergy(8);
 }}));
-var chargeMove = new Move({name:"Charge", bonusToHit: 1, act: function (user, target) {
-	user.texts.push("Charged!");
-	user.name += "!";
-}});
 
 //passing in _cards is a hack so we can update action odds mid-turn
 //fixme: only do it once at the end of a turn, called by gameservice,

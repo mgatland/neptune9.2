@@ -1,10 +1,9 @@
 todo:
 
-[ ] improve setup UI
 [ ] fx images
 [ ] change starting stregth etc to 10 not 100
-
-
+[ ] make it easier to know when it's your turn
+[ ] easier to know what actions other people took, especially when they miss.
 
 [ ] improve current target indicator
 [ ] on one computer, make both players use the same target
