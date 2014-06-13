@@ -69,7 +69,7 @@ angular.module('neptune9', ['ngAnimate'])
     console.log("gs.endTurn");
     var result = game.endTurn();
     gs.turn = game.turn;
-    if (game.players[gs.turn] != undefined) {
+    if (game.players[gs.turn] != undefined && game.players[gs.turn].isLocal) {
     	gs.activePlayer = gs.turn;
 
     	$rootScope.showLevelUpUI = gs.players[gs.turn].levelUpState();
@@ -93,6 +93,15 @@ angular.module('neptune9', ['ngAnimate'])
 
   gs.experienceProgress = function () {
   	return game.experienceProgress();
+  }
+
+  gs.setLocalPlayer = function(num) {
+  	if (num === 0) {
+  		gs.players[1].isLocal = false;
+  	} else {
+  		gs.players[0].isLocal = false;
+  	}
+  	gs.activePlayer = num;
   }
 
   return gs;
@@ -214,13 +223,14 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 })
 
-.controller("SetupCtrl", function ($scope, $rootScope, netService) {
+.controller("SetupCtrl", function ($scope, $rootScope, netService, gameService) {
 	$scope.screen = "gametype";
 	$scope.hostingId = "";
 	$scope.joiningId = "";
 
 	var connCallback = function (isHosting) {
 		$rootScope.inGame = true;
+		gameService.setLocalPlayer(isHosting ? 0 : 1);
 		$rootScope.$apply();
 	}
 

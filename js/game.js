@@ -287,7 +287,7 @@ function Player(_cards, options) {
 	var _targetNum = -1;
 
 	this.actionOdds = [];
-
+	this.isLocal = true;
 
 	this.updateActionOdds = function () {
 		_this.actionOdds = [];
