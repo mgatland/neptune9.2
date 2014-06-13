@@ -44,8 +44,8 @@ function Game() {
 	var dopnot = {name: "Dopnot", img: "dopnot.png", attr:[10,  10, 12, 9, 10]};
 
   this.cards = [{}, {}, {}, {}];
-  this.cards[0].creature = new Creature({name:"Kathee", img:"spy.png", attr:[10, 10, 100, 100, 100], ai: null, team: "good"});
-  this.cards[1].creature = new Creature({name:"Imogen", img:"missionary.png", attr:[10, 10, 100, 100, 100], ai: null, team: "good"});
+  this.cards[0].creature = new Creature({name:"Kathee", img:"spy.png", attr:[10, 10, 10, 10, 10], ai: null, team: "good"});
+  this.cards[1].creature = new Creature({name:"Imogen", img:"missionary.png", attr:[10, 10, 10, 10, 10], ai: null, team: "good"});
   this.cards[2].creature = new Creature(weewit);
   this.cards[3].creature = new Creature(gobnit);
 
@@ -55,6 +55,7 @@ function Game() {
 
   this.players.forEach(function (p) {
   	p.card.creature.availableSkills = [];
+  	p.card.creature.availableSkills.push(superShotMove);
   	p.card.creature.availableSkills.push(healMove);
   	p.card.creature.availableSkills.push(drainMove);
   });
@@ -220,11 +221,12 @@ var healMove = new Move(
 			validTargets: "friends",
 			act: function(user, target, chance) {
 				if (random.value() < chance) {
-					target.healAmount(user.iFoc());
+					target.healAmount(user.iFoc()/2);
 					addFx(target, "heal");
 				} else {
 					addFx(target, "heal-miss");
 				}
+				user.useEnergy(6);
 			},
 			hitChance: function(user, target) {
 				var chance = (user.iFoc() / (user.iFoc() + 10));
@@ -243,6 +245,7 @@ var drainMove = new Move(
 				} else {
 					addFx(target, "drain-miss");
 				}
+				user.useEnergy(6);
 			},
 			hitChance: function (user, target) {
 				var chance = (user.iFoc() / (user.iFoc() + target.iFoc()));
@@ -251,6 +254,18 @@ var drainMove = new Move(
 		}
 	)
 
+var superShotMove = new Move({name:"Super shot!", bonusToHit: 0.25, act: function (user, target, chance) {
+	if (random.value() < chance) {
+		target.hurt(Math.max(user.iStr() / 2, 1));
+		target.useEnergy(Math.max(user.iStr() / 4, 1));
+		addFx(target, "whack");
+	} else {
+		addFx(target,"shot-miss");
+	}
+	user.useEnergy(9);
+}});
+
+
 var normalMoves = [];
 normalMoves.push(new Move(
 	{
@@ -258,7 +273,7 @@ normalMoves.push(new Move(
 		bonusToHit: 0.5, 
 		act: function (user, target, chance) {
 			if (random.value() < chance) {
-				target.hurt(Math.max(user.iStr() / 8, 1));
+				target.hurt(Math.max(user.iStr() / 4, 1));
 				addFx(target, "shot");
 			} else {
 				addFx(target, "shot-miss");
@@ -269,16 +284,6 @@ normalMoves.push(new Move(
 	));
 normalMoves.push(new Move({name:"Rest", bonusToHit: 1, act: function (user, target) {
 	addFx(user, "rest");
-}}));
-normalMoves.push(new Move({name:"Whack!", bonusToHit: 0.25, act: function (user, target, chance) {
-	if (random.value() < chance) {
-		target.hurt(Math.max(user.iStr() / 4, 1));
-		target.useEnergy(Math.max(user.iStr() / 8, 1));
-		addFx(target, "whack");
-	} else {
-		addFx(target,"shot-miss");
-	}
-	user.useEnergy(8);
 }}));
 
 //passing in _cards is a hack so we can update action odds mid-turn
@@ -337,12 +342,6 @@ function Creature (options) {
 	var c = this;
 	this.name = "Name";
 	this.team = "evil";
-	this.attr = [];
-	this.hp = 10;
-	this.energy = 10;
-	this.attr[STRENGTH] = 10; //attack damage
-	this.attr[SPEED] = 10; //hit and dodge
-	this.attr[FOCUS] = 10; //magic, resist magic
 	this.attrNames = attrNames;
 
 	this.potions = {};
@@ -367,8 +366,11 @@ function Creature (options) {
 	for (var attrname in options) {
 	 this[attrname] = options[attrname]; 
 	};
-	this.attr[MAXHP] = this.hp;
-	this.attr[MAXENERGY] = this.energy;
+	if (this.attr.length != this.attrNames.length) { //Just a sanity check
+		console.error("Wrong number of attr values for " + this.name, this.attr);
+	}
+	this.hp = this.attr[MAXHP]
+	this.energy = this.attr[MAXENERGY];
 
 	var energyModifier = function () { return c.energy / c.attr[MAXENERGY] + 0.5};
 

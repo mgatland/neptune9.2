@@ -1,8 +1,5 @@
 todo:
 
-[ ] improve current target indicator
-[ ] change starting stregth etc to 10 not 100
-
 [ ] easier to know what actions other people took, especially when they miss.
 [ ] on one computer, make both players use the same target
 
@@ -26,6 +23,8 @@ todo:
 
 [x] images for each move
 [x] make it easier to know when it's your turn
+[x] easier to see current target indicator
+[x] change starting strength etc to 10 not 100
 
 [x] networked multiplayer
 	[x] config screens
