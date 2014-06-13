@@ -275,6 +275,11 @@ angular.module('neptune9', ['ngAnimate'])
 	var connCallback = function (isHosting) {
 		$rootScope.inGame = true;
 		gameService.setLocalPlayer(isHosting ? 0 : 1);
+		if (isHosting) {
+			random = new Random(""+$scope.hostingId);
+		} else {
+			random = new Random(""+$scope.joiningId);
+		}
 		$rootScope.$apply();
 	}
 
@@ -283,6 +288,7 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 
 	$scope.localMode = function () {
+		random = new Random();
 		$rootScope.inGame = true;
 	}
 

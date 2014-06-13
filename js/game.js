@@ -1,6 +1,20 @@
 //Game code
 
+var random; //eww global.
+
+function Random(seed) {
+	console.log("Random seed [" + seed + "]");
+	var rng = new Math.seedrandom(seed);
+	console.log("Check value: ", rng());
+	this.value = function () {
+		var temp = rng();
+		console.log(temp);
+		return temp;
+	}
+}
+
 function Game() {
+
 	var _this = this;
 	var moveIsUsed = false;
 
@@ -54,7 +68,7 @@ function Game() {
   var nextTurnMap = {0:2, 2:1, 1:3, 3:0};
 
   var spawnCreature = function(num) {
-  	var type = (Math.random() < 0.5) ? leepig : dopnot;
+  	var type = (random.value() < 0.5) ? leepig : dopnot;
   	_this.cards[num].creature = new Creature(type);
   }
 
@@ -77,7 +91,7 @@ function Game() {
       if (attacker.team === "good" && target.team !== "good") {
       	this.experience++;
       }
-      if (Math.random() > 0.5) {
+      if (random.value() > 0.5) {
         attacker.getPotionHp();
       } else {
         attacker.getPotionEnergy();
@@ -208,7 +222,7 @@ var healMove = new Move(
 			name: "Heal",
 			validTargets: "friends",
 			act: function(user, target, chance) {
-				if (Math.random() < chance) {
+				if (random.value() < chance) {
 					target.healAmount(user.iFoc());
 					addFx(target, "rest");
 				} else {
@@ -226,7 +240,7 @@ var drainMove = new Move(
 		{
 			name: "Drain",
 			act: function(user, target, chance) {
-				if (Math.random() < chance) {
+				if (random.value() < chance) {
 					target.useEnergy(user.iFoc()/2);
 					addFx(target, "dead"); //FIXME
 				} else {
@@ -246,7 +260,7 @@ normalMoves.push(new Move(
 		name:"Shoot",
 		bonusToHit: 0.5, 
 		act: function (user, target, chance) {
-			if (Math.random() < chance) {
+			if (random.value() < chance) {
 				target.hurt(Math.max(user.iStr() / 8, 1));
 				addFx(target, "shot");
 			} else {
@@ -261,7 +275,7 @@ normalMoves.push(new Move({name:"Rest", bonusToHit: 1, act: function (user, targ
 	user.texts.push("Rested");
 }}));
 normalMoves.push(new Move({name:"Whack!", bonusToHit: 0.25, act: function (user, target, chance) {
-	if (Math.random() < chance) {
+	if (random.value() < chance) {
 		target.hurt(Math.max(user.iStr() / 4, 1));
 		target.useEnergy(Math.max(user.iStr() / 8, 1));
 		addFx(target, "whack");
