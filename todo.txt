@@ -1,5 +1,11 @@
 todo:
 
+[ ] improve setup UI
+[ ] fx images
+[ ] change starting stregth etc to 10 not 100
+
+
+
 [ ] improve current target indicator
 [ ] on one computer, make both players use the same target
 
@@ -13,11 +19,6 @@ todo:
 	[ ] attack both
 	[ ] detonate dead
 
-[ ] networked multiplayer
-	[x] Send actions to remote
-	[x] Perform remote actions
-	[ ] Use seedable random number generator
-
 ----
 
 [ ] attack sounds
@@ -25,6 +26,12 @@ todo:
 [ ] put static over whole screen or just images
 
 2014-06-13
+
+[x] networked multiplayer
+	[x] config screens
+	[x] Send actions to remote
+	[x] Perform remote actions
+	[x] Use seedable random number generator
 
 [x] show level up UI for a second after you allocate points
 [x] show XP progress towards next level

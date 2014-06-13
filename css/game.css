@@ -22,6 +22,44 @@ body {
 	line-height: 19px;
 }
 
+.setupscreen {
+	width: 408px;
+	padding: 15px;
+	border: 2px solid orange;
+	border-radius: 20px;
+
+	font-size: 28px;
+	line-height: 36px;
+}
+
+b {
+	font-weight: inherit;
+	color: #af7;
+}
+
+input {
+	background-color: #af7;
+	border-style: none;
+	border-radius: 16px;
+	padding-left: 20px;
+
+	font-family: "Orbitron";
+	line-height: 32px;
+	font-size: 32px;
+	
+}
+
+::-webkit-input-placeholder { /* WebKit browsers */
+    color:    #446630;
+}
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color:    #446630;
+    opacity:  1;
+}
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color:    #446630;
+}
+
 .gamescreen {
 	width: 438px;
 	/*height: 670px;*/
