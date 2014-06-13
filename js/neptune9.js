@@ -107,7 +107,7 @@ angular.module('neptune9', ['ngAnimate'])
   return gs;
 })
  
-.factory('keyboardService', function(gameService) {
+.factory('keyboardService', function() {
 	var keyboard = new Keyboard();
 	return keyboard;
 })
@@ -136,13 +136,13 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 
 	$scope.select = function (index) {
-		var player = gameService.players[gameService.turn];
+		var player = gameService.players[gameService.activePlayer];
 		if (player === undefined) return;
 		player.setTargetNum(index);
 	}
 
 	$scope.isActiveTarget = function () {
-		var activePlayer = gameService.players[gameService.turn];
+		var activePlayer = gameService.players[gameService.activePlayer];
 		if (activePlayer === undefined) {
 			return false;
 		}
