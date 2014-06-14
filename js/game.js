@@ -73,9 +73,21 @@ function Game() {
     });
   }
 
-  var spawnCreature = function(num) {
+  var spawnCreature = function (num) {
   	var type = (random.value() < 0.5) ? leepig : dopnot;
   	_this.cards[num].creature = new Creature(type);
+  }
+
+  var gotAKill = function (attacker, victim) {
+	console.log(victim.name + " was killed");
+	if (attacker.team === "good" && victim.team !== "good") {
+	  _this.experience++;
+	  if (random.value() > 0.5) {
+        attacker.getPotionHp();
+      } else {
+        attacker.getPotionEnergy();
+      }
+	}
   }
 
   this.useAction = function(userCard, actionNum, targetNum) {
@@ -88,21 +100,16 @@ function Game() {
   	var attacker = userCard.creature;
   	var action = attacker.moves[actionNum];
   	var target = this.cards[targetNum].creature;
-    var wasAlive = target.isAlive();
   	console.log(attacker.name + " used " + action.name + " on " + target.name);
   	action.act(attacker, target, userCard.num, targetNum);
 
-    if (target.isAlive() === false && wasAlive === true) {
-      console.log("Target was killed");
-      if (attacker.team === "good" && target.team !== "good") {
-      	this.experience++;
-      }
-      if (random.value() > 0.5) {
-        attacker.getPotionHp();
-      } else {
-        attacker.getPotionEnergy();
-      }
-    }
+  	this.cards.forEach(function (card) {
+  		var c = card.creature;
+  		if (c.justDied) {
+  			c.justDied = false;
+  			gotAKill(attacker, c);
+  		}
+  	});
 
     if (this.experience >= this.experienceTarget) {
     	experienceLevel++;
@@ -123,7 +130,7 @@ function Game() {
 
   	if (creature.hp <= 0) {
   		creature.deadTime++;
-  		if (creature.deadTime == 2) {
+  		if (creature.deadTime == 2 && creature.team !== "good") {
   			//create new creature
   			spawnCreature(this.turn);
   		}
@@ -394,9 +401,13 @@ function Creature (options) {
 	}
 
 	this.hurt = function (damage) {
+		if (this.hp <= 0) return;
 		damage = Math.floor(damage);
 		this.hp -= damage;
-		if (this.hp < 0) this.hp = 0;
+		if (this.hp < 0) {
+			this.hp = 0;
+			this.justDied = true;
+		}
 	}
 
 	this.useEnergy = function (amount) {
