@@ -265,13 +265,18 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 	$scope.player = player;
 
-	var updateUI = function () {
+	var updateUI = function (delayed) {
 		var levelUpState = player().levelUpState();
 		if (levelUpState != $rootScope.showLevelUpUI) {
-			setTimeout(function () {
+			if (delayed) {
+				setTimeout(function () {
+					$rootScope.showLevelUpUI = levelUpState;
+					$rootScope.$apply();
+				}, quickDelay);
+			} else {
 				$rootScope.showLevelUpUI = levelUpState;
-				$rootScope.$apply();
-			}, quickDelay);
+			}
+
     }
 	}
 
@@ -282,7 +287,7 @@ angular.module('neptune9', ['ngAnimate'])
 
 	$scope.levelUpAttribute = function (index) {
 		gameService.levelUpAttribute(player(), index);
-		updateUI();
+		updateUI(true);
 	}
 })
 
