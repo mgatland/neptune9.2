@@ -34,11 +34,11 @@ body {
 
 b {
 	font-weight: inherit;
-	color: #af7;
+	color: #7482E6;
 }
 
 input {
-	background-color: #af7;
+	background-color: #4A5ACA;
 	border-style: none;
 	border-radius: 16px;
 	padding-left: 20px;
@@ -53,14 +53,14 @@ input {
 }
 
 ::-webkit-input-placeholder { /* WebKit browsers */
-    color:    #446630;
+    color:    #141B4D;
 }
 ::-moz-placeholder { /* Mozilla Firefox 19+ */
-    color:    #446630;
+    color:    #141B4D;
     opacity:  1;
 }
 :-ms-input-placeholder { /* Internet Explorer 10+ */
-    color:    #446630;
+    color:    #141B4D;
 }
 
 .gamescreen {
@@ -104,10 +104,13 @@ input {
 }
 
 .action-cost {
-	font-size: 16px;
 	float: right;
 	margin-right: 5px;
-	font-weight: normal;
+	/* Make the dot look right: */
+	color: #4A5ACA;
+	font-family: Arial, Helvetica;
+	font-weight: bold;
+	font-size: 42px;
 }
 
 .actionodds {
@@ -117,12 +120,11 @@ input {
 }
 
 .selected {
-	/* color: #af7; */
 	font-weight: bold;
 }
 
 .levelup .actionbutton {
-	background-color: #af7;
+	background-color: #7482E6;
 }
 
 /* end of controls */
@@ -201,7 +203,7 @@ input {
 
 .energybarinside {
 	width: 100%;
-	background-color: #af7;
+	background-color: #4A5ACA;
 	position: absolute;
 	bottom: 0;
 }
@@ -222,7 +224,7 @@ input {
 
 .xp-bar-inside {
 	height: 100%;
-	background-color: #af7;
+	background-color: #4A5ACA;
 	position: absolute;
 	left: 0;
 }

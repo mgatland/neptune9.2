@@ -252,7 +252,7 @@ angular.module('neptune9', ['ngAnimate'])
 		if (!action.energyCost) return null;
 		var out = "";
 		for (var i = 0; i < action.energyCost / 3; i++) {
-			out += "|";
+			out += "•";
 		}
 		return out;
 	}
