@@ -100,7 +100,7 @@ icon: neptune9/neptune9-icon.png
 				ng-class="{selected: $index==selectedAction}"
 				ng-click="useAction($index)">
 				{{action.name}}
-				<span class="actionodds">{{player().actionOdds[$index]}}</span>
+				<span class="actionodds">{{player().actionOdds[player().getTargetNum()][$index]}}</span>
 				</div>
 				<p ng-if="player().card.creature.moves.length < 3">
 					You are <b>{{player().card.creature.name}}</b>. On your turn, click on a creature to target, then click on an action like 'Shoot'.

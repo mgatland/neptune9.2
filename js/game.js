@@ -50,8 +50,8 @@ function Game() {
   this.cards[3].creature = new Creature(gobnit);
 
   this.players = [];
-  this.players[0] = new Player(this.cards, {card: this.cards[0], targetNum: 2});
-  this.players[1] = new Player(this.cards, {card: this.cards[1], targetNum: 3});
+  this.players[0] = new Player({card: this.cards[0], targetNum: 2});
+  this.players[1] = new Player({card: this.cards[1], targetNum: 3});
 
   this.players.forEach(function (p) {
   	p.card.creature.availableSkills = [];
@@ -66,6 +66,12 @@ function Game() {
   }
 
   var nextTurnMap = {0:2, 2:1, 1:3, 3:0};
+
+  var updateActionOdds = function() {
+  	_this.players.forEach(function (player) {
+      player.updateActionOdds(_this.cards);
+    });
+  }
 
   var spawnCreature = function(num) {
   	var type = (random.value() < 0.5) ? leepig : dopnot;
@@ -107,9 +113,6 @@ function Game() {
 	    });
     }
 
-    this.players.forEach(function (player) {
-      player.updateActionOdds();
-    });
     return true;
   }  
 
@@ -130,6 +133,8 @@ function Game() {
   		creature.recoverEnergy(creature.getMaxEnergy() / 4);
   	}
 
+    updateActionOdds();
+
   	if (creature.ai != null) {
   		var action = creature.ai(this, this.turn);
   		this.useAction(this.cards[this.turn], action.move, action.target);
@@ -141,6 +146,9 @@ function Game() {
   this.moveIsUsed = function () {
   	return moveIsUsed;
   }
+
+  //Start initial turn
+  updateActionOdds();
 }
 
 function addFx(character, fxName) {
@@ -286,10 +294,7 @@ normalMoves.push(new Move({name:"Rest", bonusToHit: 1, act: function (user, targ
 	addFx(user, "rest");
 }}));
 
-//passing in _cards is a hack so we can update action odds mid-turn
-//fixme: only do it once at the end of a turn, called by gameservice,
-//pass in the cards then
-function Player(_cards, options) {
+function Player(options) {
 	var _this = this;
 
 	for (var attrname in options) {
@@ -300,20 +305,22 @@ function Player(_cards, options) {
 	this.actionOdds = [];
 	this.isLocal = true;
 
-	this.updateActionOdds = function () {
+	this.updateActionOdds = function (cards) {
 		_this.actionOdds = [];
 		var user = _this.card.creature;
-		var target = _cards[_targetNum].creature;
-		_this.card.creature.moves.forEach(function (move) {
-			var hitChance = move.hitChance(user, target);
-			_this.actionOdds.push(Math.floor(hitChance*100) + "%");
-		});
-			
+		var target = cards[_targetNum].creature;
+
+		cards.forEach(function (card) {
+			_this.actionOdds[card.num] = [];
+			_this.card.creature.moves.forEach(function (move) {
+				var hitChance = move.hitChance(user, card.creature);
+				_this.actionOdds[card.num].push(Math.floor(hitChance*100) + "%");
+			});
+		});			
 	}
 
 	this.setTargetNum = function (i) {
 		_targetNum = i;
-		this.updateActionOdds();
 	}
 
 	this.getTargetNum = function () {
