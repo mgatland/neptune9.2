@@ -1,3 +1,7 @@
+var quickDelay = 500;
+var skipDelay = 600;
+var turnDelay = 800;
+
 //angular code
 
 angular.module('neptune9', ['ngAnimate'])
@@ -71,7 +75,6 @@ angular.module('neptune9', ['ngAnimate'])
   }
 
   var endTurn = function(gs) {
-    console.log("gs.endTurn");
     var result = game.endTurn();
     gs.turn = game.turn;
     if (game.players[gs.turn] != undefined && game.players[gs.turn].isLocal) {
@@ -80,8 +83,8 @@ angular.module('neptune9', ['ngAnimate'])
     	$rootScope.showLevelUpUI = gs.players[gs.turn].levelUpState();
     }
 
-    if (result === "skip") queueNextTurn(600);
-    if (result === "endturn") queueNextTurn(800);
+    if (result === "skip") queueNextTurn(skipDelay);
+    if (result === "endturn") queueNextTurn(turnDelay);
   	$rootScope.$apply();
   }
 
@@ -89,9 +92,8 @@ angular.module('neptune9', ['ngAnimate'])
   	if (!isRemote && isMultiplayer) {
   		netService.send(["useAction", userCard.num, actionNum, targetNum])
   	}
-    console.log("gs.useAction");
     if (game.useAction(userCard, actionNum, targetNum)) {
-      queueNextTurn(800);
+      queueNextTurn(turnDelay);
     }
   }
 
@@ -100,6 +102,7 @@ angular.module('neptune9', ['ngAnimate'])
   		netService.send(["levelUpSkill", player.card.num, index]);
   	}
   	player.card.creature.levelUpSkill(index);
+  	player.updateActionOdds(gs.cards); //todo: move into Game.levelUpSkill
   }
 
   gs.levelUpAttribute = function (player, index, isRemote) {
@@ -107,6 +110,7 @@ angular.module('neptune9', ['ngAnimate'])
   		netService.send(["levelUpAttribute", player.card.num, index]);
   	}
   	player.card.creature.levelUpAttribute(index);
+  	player.updateActionOdds(gs.cards); //todo: move into Game.levelUpAttribute
   }
 
   gs.moveIsUsed = function () {
@@ -258,7 +262,7 @@ angular.module('neptune9', ['ngAnimate'])
 			setTimeout(function () {
 				$rootScope.showLevelUpUI = levelUpState;
 				$rootScope.$apply();
-			}, 500);
+			}, quickDelay);
     }
 	}
 

@@ -1,8 +1,8 @@
 todo:
 
 Interestingness:
-[ ] enemy AI
-[ ] different moves for different enemies
+	[ ] enemy AI
+	[ ] different moves for different enemies
 
 New moves:
 	[ ] precision (stat boost for next 2 turns)
@@ -12,11 +12,11 @@ New moves:
 	[ ] poison (take damage every turn for a few turns)
 	[ ] freeze\stun (skip a turn, and defence is lowered to zero.)
 	[ ] detonate dead
+	[ ] protect
 
 Player death:
 	[ ] when a player dies, no longer show their controls (1 computer mode)
-	[ ] when a player dies, don't replace them? or replace them with an enemy who attacks the surviving player correctly! (currently you get an AI ally)
-	[ ] don't let enemies win potions by killing players! lol
+	[ ] when both players die, end the game.
 
 UI:
 	[ ] easier to know what actions other people took, especially when they miss.
@@ -31,6 +31,11 @@ dev:
 [ ] attack sounds
 [ ] recolor images to fit the color scheme?
 [ ] put static over whole screen or just images
+
+2014-06-14
+
+[x] don't replace dead players.
+[x] only enemies drop potions on death, not players.
 
 2014-06-13
 

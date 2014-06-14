@@ -8,7 +8,6 @@ function Random(seed) {
 	console.log("Check value: ", rng());
 	this.value = function () {
 		var temp = rng();
-		console.log(temp);
 		return temp;
 	}
 }
@@ -105,7 +104,7 @@ function Game() {
 
   	this.cards.forEach(function (card) {
   		var c = card.creature;
-  		if (c.justDied) {
+  		if (c.justDied === true) {
   			c.justDied = false;
   			gotAKill(attacker, c);
   		}
@@ -128,7 +127,7 @@ function Game() {
   	moveIsUsed = false;
   	var creature = this.cards[this.turn].creature;
 
-  	if (creature.hp <= 0) {
+  	if (creature.isDead()) {
   		creature.deadTime++;
   		if (creature.deadTime == 2 && creature.team !== "good") {
   			//create new creature
@@ -269,7 +268,7 @@ var drainMove = new Move(
 		}
 	)
 
-var superShotMove = new Move({name:"Super shot!", bonusToHit: 0.25, act: function (user, target, chance) {
+var superShotMove = new Move({name:"Super shot!", bonusToHit: 0, act: function (user, target, chance) {
 	if (random.value() < chance) {
 		target.hurt(Math.max(user.iStr() / 2, 1));
 		target.useEnergy(Math.max(user.iStr() / 4, 1));
@@ -285,7 +284,7 @@ var normalMoves = [];
 normalMoves.push(new Move(
 	{
 		name:"Shoot",
-		bonusToHit: 0.5, 
+		bonusToHit: 0.2, 
 		act: function (user, target, chance) {
 			if (random.value() < chance) {
 				target.hurt(Math.max(user.iStr() / 4, 1));
@@ -386,7 +385,14 @@ function Creature (options) {
 	this.hp = this.attr[MAXHP]
 	this.energy = this.attr[MAXENERGY];
 
-	var energyModifier = function () { return c.energy / c.attr[MAXENERGY] + 0.5};
+	this.isDead = function () {
+		return this.hp <= 0;
+	}
+
+	var energyModifier = function () {
+	  if (c.isDead()) return 0;
+	  return c.energy / c.attr[MAXENERGY] + 0.5
+	};
 
 	this.iStr = function () { return c.attr[STRENGTH] * energyModifier()};
 	this.iSpd = function () { return c.attr[SPEED] * energyModifier()};
@@ -401,11 +407,12 @@ function Creature (options) {
 	}
 
 	this.hurt = function (damage) {
-		if (this.hp <= 0) return;
+		if (this.isDead()) return;
 		damage = Math.floor(damage);
 		this.hp -= damage;
-		if (this.hp < 0) {
+		if (this.isDead()) {
 			this.hp = 0;
+			this.energy = 0;
 			this.justDied = true;
 		}
 	}
@@ -460,13 +467,13 @@ function Creature (options) {
 	}
 
 	this.healAmount = function(amount) {
-		if (this.hp <= 0) return;
+		if (this.isDead()) return;
 		this.hp += Math.floor(amount * this.attr[MAXHP]);
 		this.hp = Math.min(this.hp, this.attr[MAXHP]);		
 	}
 
 	this.restoreEnergyFraction = function(amount) {
-		if (this.hp <= 0) return;
+		if (this.isDead()) return;
 		this.energy += Math.floor(amount * this.attr[MAXENERGY]);
 		this.energy = Math.min(this.energy, this.attr[MAXENERGY]);		
 	}
@@ -483,12 +490,16 @@ function Creature (options) {
 		}
 	}
 
+	var fullHeal = function () {
+		c.hp = c.getMaxHp();
+		c.energy = c.getMaxEnergy();
+	}
+
 	this.levelUpAttribute = function(index) {
 		if (this.levelUpPoints <= 0) return;
 		this.attr[index] += 1;
 		this.levelUpPoints--;
-		this.hp = this.getMaxHp();
-		this.energy = this.getMaxEnergy();
+		fullHeal();
 	}
 
 	this.levelUpSkill = function (index) {
@@ -496,6 +507,7 @@ function Creature (options) {
 		this.levelUpSkillPoints--;
 		this.moves.push(this.availableSkills[index]);
 		this.availableSkills.splice(index, 1);
+		fullHeal();
 	}
 }
 
