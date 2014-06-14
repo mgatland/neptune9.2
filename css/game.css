@@ -63,35 +63,26 @@ input {
 .gamescreen {
 	width: 438px;
 	/*height: 670px;*/
+	border: 2px solid orange;
 	border-top-right-radius: 100px;
 	border-bottom-right-radius: 100px;
-	background-color: orange;
-	padding-top: 25px;
-	padding-bottom: 25px;
+	padding-top: 15px;
+	padding-bottom: 15px;
 }
 
 .cards {
 	width: 400px;
-	border-top-right-radius: 50px;
 	padding-top: 15px;
-	background-color: black;
 }
 
 /* controls */
 
 .controls {
-	width: 400px;
+	width: 380px;
 	height: 280px;
-	background-color: black;
-	border-bottom-right-radius: 50px;
-
 	font-size: 24px;
 	line-height: 27px;
-}
-
-.controlpanel {
 	padding: 20px;
-	vertical-align:top;
 }
 
 .actionbutton {
