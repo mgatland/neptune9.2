@@ -247,6 +247,15 @@ angular.module('neptune9', ['ngAnimate'])
 		$scope.selectedAction = index;
 		gameService.useAction(player().card, index, player().getTargetNum());
 	}
+
+	$scope.energyCostIcon = function (action) {
+		if (!action.energyCost) return null;
+		var out = "";
+		for (var i = 0; i < action.energyCost / 3; i++) {
+			out += "|";
+		}
+		return out;
+	}
 })
 
 .controller('LevelUpCtrl', function($scope, gameService, $rootScope) {

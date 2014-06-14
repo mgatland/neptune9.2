@@ -43,6 +43,9 @@ input {
 	border-radius: 16px;
 	padding-left: 20px;
 
+	margin-bottom: 20px;
+	width: 200px;
+
 	font-family: "Orbitron";
 	line-height: 32px;
 	font-size: 32px;
@@ -100,9 +103,17 @@ input {
 	background-color: #806200;
 }
 
+.action-cost {
+	font-size: 16px;
+	float: right;
+	margin-right: 5px;
+	font-weight: normal;
+}
+
 .actionodds {
 	font-size: 16px;
 	float: right;
+	font-weight: normal;
 }
 
 .selected {

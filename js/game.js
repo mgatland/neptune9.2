@@ -101,6 +101,9 @@ function Game() {
   	var target = this.cards[targetNum].creature;
   	console.log(attacker.name + " used " + action.name + " on " + target.name);
   	action.act(attacker, target, userCard.num, targetNum);
+  	if (action.energyCost) {
+  		attacker.useEnergy(action.energyCost);
+  	}
 
   	this.cards.forEach(function (card) {
   		var c = card.creature;
@@ -176,6 +179,7 @@ function makeHitDecider(bonusToHit) {
 function Move(options) {
 	//configurable parts
 	this.name = options.name;
+	this.energyCost = options.energyCost;
 	var action = options.act;
 	var validTargets = options.validTargets;
 
@@ -233,6 +237,7 @@ var healMove = new Move(
 		{
 			name: "Heal",
 			validTargets: "friends",
+			energyCost: 6,
 			act: function(user, target, chance) {
 				if (random.value() < chance) {
 					target.healAmount(user.iFoc()/2);
@@ -240,7 +245,6 @@ var healMove = new Move(
 				} else {
 					addFx(target, "heal-miss");
 				}
-				user.useEnergy(6);
 			},
 			hitChance: function(user, target) {
 				var chance = (user.iFoc() / (user.iFoc() + 6));
@@ -252,14 +256,14 @@ var healMove = new Move(
 var drainMove = new Move(
 		{
 			name: "Drain",
+			energyCost: 6,
 			act: function(user, target, chance) {
 				if (random.value() < chance) {
-					target.useEnergy(user.iFoc()/2);
+					target.useEnergy(user.iFoc());
 					addFx(target, "drain");
 				} else {
 					addFx(target, "drain-miss");
 				}
-				user.useEnergy(6);
 			},
 			hitChance: function (user, target) {
 				var chance = (user.iFoc() / (user.iFoc() + target.iFoc()));
@@ -268,7 +272,11 @@ var drainMove = new Move(
 		}
 	)
 
-var superShotMove = new Move({name:"Super shot!", bonusToHit: 0, act: function (user, target, chance) {
+var superShotMove = new Move({
+	name:"Super shot!", 
+	bonusToHit: 0, 
+	energyCost: 9,
+	act: function (user, target, chance) {
 	if (random.value() < chance) {
 		target.hurt(Math.max(user.iStr() / 2, 1));
 		target.useEnergy(Math.max(user.iStr() / 4, 1));
@@ -276,7 +284,6 @@ var superShotMove = new Move({name:"Super shot!", bonusToHit: 0, act: function (
 	} else {
 		addFx(target,"shot-miss");
 	}
-	user.useEnergy(9);
 }});
 
 
@@ -284,7 +291,8 @@ var normalMoves = [];
 normalMoves.push(new Move(
 	{
 		name:"Shoot",
-		bonusToHit: 0.2, 
+		bonusToHit: 0.2,
+		energyCost: 3,
 		act: function (user, target, chance) {
 			if (random.value() < chance) {
 				target.hurt(Math.max(user.iStr() / 4, 1));
@@ -292,7 +300,6 @@ normalMoves.push(new Move(
 			} else {
 				addFx(target, "shot-miss");
 			}
-			user.useEnergy(3);
 		}
 	}
 	));
