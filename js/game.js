@@ -418,13 +418,11 @@ function Creature (options) {
 	}
 
 	this.useEnergy = function (amount) {
-		amount = Math.floor(amount);
 		this.energy -= amount;
 		if (this.energy < 0) this.energy = 0;
 	}
 
 	this.recoverEnergy = function (amount) {
-		amount = Math.floor(amount);
 		this.energy += amount;
 		if (this.energy > this.attr[MAXENERGY]) this.energy = this.attr[MAXENERGY];
 	}

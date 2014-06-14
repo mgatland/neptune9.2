@@ -2,6 +2,7 @@ todo:
 
 Interestingness:
 	[ ] enemy AI
+		Attack living opponents
 	[ ] different moves for different enemies
 
 New moves:
