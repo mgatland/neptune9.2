@@ -171,7 +171,7 @@ function addFx(character, fxName) {
 
 function makeHitDecider(bonusToHit) {
 	return function (user, target) {
-  	var chance = bonusToHit + (1 - bonusToHit) * (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
+  	var chance = bonusToHit + (2 * user.iSpd() / (2 * user.iSpd() + target.iSpd()));
 		return Math.min(chance, 1);
 	}
 }
@@ -266,7 +266,7 @@ var drainMove = new Move(
 				}
 			},
 			hitChance: function (user, target) {
-				var chance = (user.iFoc() / (user.iFoc() + target.iFoc()));
+				var chance = 0.2 + (2 * user.iFoc() / (2 * user.iFoc() + target.iFoc()));
 				return Math.min(chance, 1);
 			}
 		}
