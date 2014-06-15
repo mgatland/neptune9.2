@@ -69,7 +69,7 @@ icon: neptune9/neptune9-icon.png
 				<div class="portrait">
 					<img class="inportrait" ng-src="art/{{card.creature.img}}">
 					<div class="damage" style="height:{{64-card.creature.hp*64/card.creature.getMaxHp()}}"></div>
-					<img class="inportrait" src="art/dead.png" ng-if="card.creature.hp <= 0">
+					<img class="inportrait" src="art/dead.png" ng-if="card.creature.isDead()">
 				</div>
 				<div class="energybar">
 					<div class="energybarinside" style="height:{{card.creature.energy*64/card.creature.getMaxEnergy()}}"></div>
