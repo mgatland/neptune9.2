@@ -1,23 +1,8 @@
 todo:
 
-Tidy up time:
-[x] after choosing a new skill, the skill form should disappear immediately, not with a delay
-[x] preload all images
-[x] drain should be as easy to hit with as shooting (or you'd never use it)
-[x] disable moves if you don't have enough energy to use them.
-	- Because it makes a lot more sense.
-	- Previously you could use the move, it would just be less effective.
-	- not 100% sure I want this, but let's try it for a while.
-[x] UI disables moves you can't use.
-[x] dead players don't get a UI any more
-[ ] when both players die the game ends
-	[ ] pop up a "Game Over" UI
-	[ ] stop taking turns
-[ ] enemies should always choose the best move
-
 Interestingness:
 	[ ] enemy AI
-		Attack living opponents
+	[ ] enemies should always choose the best move, not randomly pick
 	[ ] different moves for different enemies
 
 New moves:
@@ -49,6 +34,21 @@ dev:
 [ ] put static over whole screen or just images
 
 2014-06-15
+
+Tidy up time:
+[x] after choosing a new skill, the skill form should disappear immediately, not with a delay
+[x] preload all images
+[x] drain should be as easy to hit with as shooting (or you'd never use it)
+[x] disable moves if you don't have enough energy to use them.
+	- Because it makes a lot more sense.
+	- Previously you could use the move, it would just be less effective.
+	- not 100% sure I want this, but let's try it for a while.
+[x] UI disables moves you can't use.
+[x] dead players don't get a UI any more
+[x] when both players die the game ends
+	[x] pop up a "Game Over" UI
+	[x] stop taking turns
+
 
 2014-06-14
 
