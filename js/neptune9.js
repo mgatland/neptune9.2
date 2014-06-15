@@ -65,7 +65,6 @@ angular.module('neptune9', ['ngAnimate'])
   var game = new Game();
   var isMultiplayer = false;
 
-  gs.turn = 0; //todo: get rid of this, push all code that uses it into game.js
   gs.activePlayer = 0;
 
   gs.cards = game.cards;
@@ -75,18 +74,21 @@ angular.module('neptune9', ['ngAnimate'])
     window.setTimeout(endTurn, delay, gs);
   }
 
+  gs.isItMyTurn = function (myNum) {
+  	return game.turn === myNum;
+  }
+
   gs.isLocalTurn = function () {
-  	var player = game.players[gs.turn];
+  	var player = game.players[game.turn];
 		return (player != undefined && player.isLocal 
     	&& !player.card.creature.isDead());
   }
 
   var endTurn = function(gs) {
     var result = game.endTurn();
-    gs.turn = game.turn;
     if (gs.isLocalTurn()) {
-    	gs.activePlayer = gs.turn;
-    	$rootScope.showLevelUpUI = gs.players[gs.turn].levelUpState();
+    	gs.activePlayer = game.turn;
+    	$rootScope.showLevelUpUI = gs.players[game.turn].levelUpState();
     }
 
     if (result === "skip") queueNextTurn(skipDelay);
@@ -175,23 +177,24 @@ angular.module('neptune9', ['ngAnimate'])
 })
 
 .run(function ($rootScope, gameService) {
+	//.cards and .experienceProgress could be moved to a 'cardsController'
+	//that wraps each cardController
 	$rootScope.cards = gameService.cards;
 	$rootScope.experienceProgress = gameService.experienceProgress;
+
+	//these two are genuine shared state
 	$rootScope.showLevelUpUI = 0;
 	$rootScope.inGame = false;
 
-	$rootScope.turn = function () {
-		return gameService.turn;
-	}
-
+	//Only used in controls
 	$rootScope.isLocalTurn = function () {
 		return gameService.isLocalTurn();
 	}
-
+	//used in ControlCtrl and the end game message
 	$rootScope.isGameOver = function () {
 		return gameService.isGameOver();
 	}
-
+	//only used in end game message
 	$rootScope.getLevel = function () {
 		return gameService.getLevel();
 	}
@@ -207,7 +210,7 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 
 	$scope.isMyTurn = function () {
-		return gameService.turn === $scope.card.num;
+		return gameService.isItMyTurn($scope.card.num);
 	}
 
 	$scope.select = function (index) {
