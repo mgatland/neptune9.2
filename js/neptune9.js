@@ -122,6 +122,10 @@ angular.module('neptune9', ['ngAnimate'])
   	return game.experienceProgress();
   }
 
+  gs.getLevel = function () {
+  	return game.getLevel();
+  }
+
   gs.setLocalPlayer = function(num) {
   	if (num === 0) {
   		gs.players[1].isLocal = false;
@@ -173,6 +177,18 @@ angular.module('neptune9', ['ngAnimate'])
 		var player = $rootScope.players[gameService.turn];
 		if (player && !player.card.creature.isDead()) return player.isLocal;
 		return false;
+	}
+
+	$rootScope.isGameOver = function () {
+		var survivorCount = 0;
+		$rootScope.players.forEach(function (p) {
+			if (!p.card.creature.isDead()) survivorCount++;
+		});
+		return survivorCount == 0;
+	}
+
+	$rootScope.getLevel = function () {
+		return gameService.getLevel();
 	}
 
 	preloadImages();

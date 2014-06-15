@@ -21,6 +21,10 @@ function Game() {
 	this.experience = 0;
 	this.experienceTarget = 2;
 
+	this.getLevel = function () {
+		return experienceLevel;
+	}
+
 	this.experienceProgress = function () {
 		//show a full bar if there are unallocated points
 		var unallocatedPoints = false;

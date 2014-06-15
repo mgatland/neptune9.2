@@ -88,7 +88,7 @@ icon: neptune9.2/neptune9.2-icon.png
 					ng-src="art/{{fx.sprite}}">
 			</div>
 		</div>
-		<div class="controls" ng-class="{disabled: !isLocalTurn()}">
+		<div class="controls" ng-class="{disabled: !isLocalTurn()}" ng-if="!isGameOver()">
 			<div class="controlpanel"
 			ng-controller="ControlCtrl"
 			ng-show="showLevelUpUI===0"
@@ -135,8 +135,11 @@ icon: neptune9.2/neptune9.2-icon.png
 				</div>
 			</div>
 		</div>
+		<div class="controls" ng-if="isGameOver()">
+			<p>Game Over</p>
+			<p>You reached level {{getLevel()}}</p>
+		</div>
 	</div>
-	<div class="lines"></div>
 {% endraw %}
 </body>
 </html>

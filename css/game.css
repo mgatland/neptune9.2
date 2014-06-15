@@ -229,6 +229,12 @@ input {
 	left: 0;
 }
 
+/* game over screen */
+
+.popover {
+	position: absolute;
+}
+
 /* Animations */
 
 .cardfx.ng-enter {
