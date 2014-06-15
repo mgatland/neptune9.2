@@ -6,11 +6,10 @@ var turnDelay = 800;
 
 angular.module('neptune9', ['ngAnimate'])
 
-.factory('netService', function($rootScope) {
+.factory('netService', function() {
 	var ns = {};
 	var peer = null;
 	var id = Math.floor(Math.random()*10000);
-	ns.send = null;
 	var _connectCallback;
 	var _reciever = {};
 	_reciever.callback = function () {console.log("PROBLEM: trying to recieve data but there is no callback to call");};
@@ -56,6 +55,8 @@ angular.module('neptune9', ['ngAnimate'])
 		setupConn(conn);
 	}
 
+	ns.send = null;
+
 	return ns;
 })
 .factory('gameService', function($rootScope, netService) {
@@ -74,13 +75,17 @@ angular.module('neptune9', ['ngAnimate'])
     window.setTimeout(endTurn, delay, gs);
   }
 
+  gs.isLocalTurn = function () {
+  	var player = game.players[gs.turn];
+		return (player != undefined && player.isLocal 
+    	&& !player.card.creature.isDead());
+  }
+
   var endTurn = function(gs) {
     var result = game.endTurn();
     gs.turn = game.turn;
-    if (game.players[gs.turn] != undefined && game.players[gs.turn].isLocal 
-    	&& !game.players[gs.turn].card.creature.isDead()) {
+    if (gs.isLocalTurn()) {
     	gs.activePlayer = gs.turn;
-
     	$rootScope.showLevelUpUI = gs.players[gs.turn].levelUpState();
     }
 
@@ -171,7 +176,6 @@ angular.module('neptune9', ['ngAnimate'])
 
 .run(function ($rootScope, gameService) {
 	$rootScope.cards = gameService.cards;
-	$rootScope.players = gameService.players;
 	$rootScope.experienceProgress = gameService.experienceProgress;
 	$rootScope.showLevelUpUI = 0;
 	$rootScope.inGame = false;
@@ -181,9 +185,7 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 
 	$rootScope.isLocalTurn = function () {
-		var player = $rootScope.players[gameService.turn];
-		if (player && !player.card.creature.isDead()) return player.isLocal;
-		return false;
+		return gameService.isLocalTurn();
 	}
 
 	$rootScope.isGameOver = function () {
