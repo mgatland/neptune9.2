@@ -25,6 +25,7 @@ function Game() {
 		//show a full bar if there are unallocated points
 		var unallocatedPoints = false;
 		this.players.forEach(function (p) {
+			if (p.card.creature.isDead()) return;
 			if (p.card.creature.levelUpPoints > 0) unallocatedPoints = true;
 			if (p.card.creature.levelUpSkillPoints > 0) unallocatedPoints = true;
 		});

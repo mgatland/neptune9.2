@@ -77,7 +77,8 @@ angular.module('neptune9', ['ngAnimate'])
   var endTurn = function(gs) {
     var result = game.endTurn();
     gs.turn = game.turn;
-    if (game.players[gs.turn] != undefined && game.players[gs.turn].isLocal) {
+    if (game.players[gs.turn] != undefined && game.players[gs.turn].isLocal 
+    	&& !game.players[gs.turn].card.creature.isDead()) {
     	gs.activePlayer = gs.turn;
 
     	$rootScope.showLevelUpUI = gs.players[gs.turn].levelUpState();
@@ -170,7 +171,7 @@ angular.module('neptune9', ['ngAnimate'])
 
 	$rootScope.isLocalTurn = function () {
 		var player = $rootScope.players[gameService.turn];
-		if (player) return player.isLocal;
+		if (player && !player.card.creature.isDead()) return player.isLocal;
 		return false;
 	}
 
