@@ -86,6 +86,9 @@ angular.module('neptune9', ['ngAnimate'])
 
     if (result === "skip") queueNextTurn(skipDelay);
     if (result === "endturn") queueNextTurn(turnDelay);
+    if (result === "gameover") {
+    	//Do nothing, the game just stops.
+    }
   	$rootScope.$apply();
   }
 
@@ -124,6 +127,10 @@ angular.module('neptune9', ['ngAnimate'])
 
   gs.getLevel = function () {
   	return game.getLevel();
+  }
+
+  gs.isGameOver = function () {
+  	return game.isGameOver();
   }
 
   gs.setLocalPlayer = function(num) {
@@ -180,11 +187,7 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 
 	$rootScope.isGameOver = function () {
-		var survivorCount = 0;
-		$rootScope.players.forEach(function (p) {
-			if (!p.card.creature.isDead()) survivorCount++;
-		});
-		return survivorCount == 0;
+		return gameService.isGameOver();
 	}
 
 	$rootScope.getLevel = function () {

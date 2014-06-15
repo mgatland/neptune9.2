@@ -21,6 +21,14 @@ function Game() {
 	this.experience = 0;
 	this.experienceTarget = 2;
 
+	this.isGameOver = function () {
+		var survivorCount = 0;
+		this.players.forEach(function (p) {
+			if (!p.card.creature.isDead()) survivorCount++;
+		});
+		return survivorCount == 0;
+	}
+
 	this.getLevel = function () {
 		return experienceLevel;
 	}
@@ -135,10 +143,14 @@ function Game() {
   }  
 
   this.endTurn = function() {
+
+  	if (this.isGameOver()) {
+  		return "gameover";
+  	}
+
   	this.turn = nextTurnMap[this.turn];
   	moveIsUsed = false;
   	var creature = this.cards[this.turn].creature;
-
   	if (creature.isDead()) {
   		creature.deadTime++;
   		if (creature.deadTime == 2 && creature.team !== "good") {
