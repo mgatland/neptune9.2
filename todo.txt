@@ -3,8 +3,8 @@ todo:
 Tidy up time:
 [x] after choosing a new skill, the skill form should disappear immediately, not with a delay
 [x] preload all images
-[ ] drain should be as easy to hit with as shooting (or you'd never use it)
-[ ] disable moves if you don't have enough energy to use them.
+[x] drain should be as easy to hit with as shooting (or you'd never use it)
+[x] disable moves if you don't have enough energy to use them.
 	- Because it makes a lot more sense.
 	- Previously you could use the move, it would just be less effective.
 [ ] dead players don't get a UI any more

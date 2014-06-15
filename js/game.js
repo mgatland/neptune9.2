@@ -91,14 +91,20 @@ function Game() {
 
   this.useAction = function(userCard, actionNum, targetNum) {
   	if (this.cards[this.turn] !== userCard) {
-  		console.log("Someone tried to act but it's not their turn.");
+  		console.log(userCard.creature.name + " tried to act but it's not their turn.");
   		return false;
   	}
   	if (moveIsUsed) return false;
-  	moveIsUsed = true;
   	var attacker = userCard.creature;
   	var action = attacker.moves[actionNum];
   	var target = this.cards[targetNum].creature;
+
+  	if (action.energyCost > attacker.energy) {
+  		console.log(attacker.name + " doesn't have enough energy to " + action.name);
+  		return false;
+  	}
+
+  	moveIsUsed = true;
   	console.log(attacker.name + " used " + action.name + " on " + target.name);
   	action.act(attacker, target, userCard.num, targetNum);
   	if (action.energyCost) {
@@ -146,7 +152,10 @@ function Game() {
 
   	if (creature.ai != null) {
   		var action = creature.ai(this, this.turn);
-  		this.useAction(this.cards[this.turn], action.move, action.target);
+  		var success = this.useAction(this.cards[this.turn], action.move, action.target);
+  		if (!success) {
+  			console.error(creature.name + " tried to do an illegal action " + action.move.name + ". Let's just skip their turn.");
+  		}
   		return "endturn"
   	}
   	return "normal";
@@ -187,6 +196,12 @@ function Move(options) {
 		this.hitChance = options.hitChance;
 	} else {
 		this.hitChance = makeHitDecider(options.bonusToHit);
+	}
+
+	if (options.aiValue) {
+		this.aiValue = options.aiValue;
+	} else {
+		this.aiValue = function () {return 10;};
 	}
 
 	var fixTarget = function (user, target) {
@@ -303,9 +318,14 @@ normalMoves.push(new Move(
 		}
 	}
 	));
-normalMoves.push(new Move({name:"Rest", bonusToHit: 1, act: function (user, target) {
-	addFx(user, "rest");
-}}));
+normalMoves.push(new Move({
+	name:"Rest", 
+	bonusToHit: 1, 
+	act: function (user, target) {
+		addFx(user, "rest");
+	},
+	aiValue: function () {return 1;},
+}));
 
 function Player(options) {
 	var _this = this;
@@ -380,7 +400,28 @@ function Creature (options) {
 
 	this.deadTime = 0;
 	this.ai = function (game, num) {
-		return {move: 0, target: (num + 2) % 4};
+		var target = (num + 2) % 4;
+		if (game.players[target].card.creature.isDead()) {
+			target = (target == 0 ? 1 : 0); //swap target if my target is dead.
+		}
+		var odds = [];
+		var max = 0;
+		this.moves.forEach(function (move) {
+			if (move.energyCost > c.energy) {
+				odds.push(0);
+			} else {
+				var value = move.aiValue();
+				odds.push(value);
+				max += value;
+			}
+		});
+		var choiceVal = random.value() * max;
+		var choice = -1;
+		while (choiceVal > 0) {
+			choice++;
+			choiceVal -= odds[choice];
+		}
+		return {move: choice, target: target};
 	};
 
 	for (var attrname in options) {
