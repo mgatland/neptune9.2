@@ -99,7 +99,7 @@ input {
 	cursor: pointer;
 }
 
-.disabled .actionbutton {
+.disabled .actionbutton, .disabled.actionbutton {
 	background-color: #806200;
 }
 

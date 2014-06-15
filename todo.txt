@@ -7,6 +7,8 @@ Tidy up time:
 [x] disable moves if you don't have enough energy to use them.
 	- Because it makes a lot more sense.
 	- Previously you could use the move, it would just be less effective.
+	- not 100% sure I want this, but let's try it for a while.
+[x] UI disables moves you can't use.
 [ ] dead players don't get a UI any more
 [ ] when both players die the game ends, pop up a "Game Over" message
 

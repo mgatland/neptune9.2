@@ -99,7 +99,7 @@ function Game() {
   	var action = attacker.moves[actionNum];
   	var target = this.cards[targetNum].creature;
 
-  	if (action.energyCost > attacker.energy) {
+  	if (!attacker.canUse(action)) {
   		console.log(attacker.name + " doesn't have enough energy to " + action.name);
   		return false;
   	}
@@ -107,9 +107,7 @@ function Game() {
   	moveIsUsed = true;
   	console.log(attacker.name + " used " + action.name + " on " + target.name);
   	action.act(attacker, target, userCard.num, targetNum);
-  	if (action.energyCost) {
-  		attacker.useEnergy(action.energyCost);
-  	}
+	attacker.useEnergy(action.energyCost);
 
   	this.cards.forEach(function (card) {
   		var c = card.creature;
@@ -188,7 +186,7 @@ function makeHitDecider(bonusToHit) {
 function Move(options) {
 	//configurable parts
 	this.name = options.name;
-	this.energyCost = options.energyCost;
+	this.energyCost = options.energyCost ? options.energyCost : 0;
 	var action = options.act;
 	var validTargets = options.validTargets;
 
@@ -407,7 +405,7 @@ function Creature (options) {
 		var odds = [];
 		var max = 0;
 		this.moves.forEach(function (move) {
-			if (move.energyCost > c.energy) {
+			if (c.canUse(move) === false) {
 				odds.push(0);
 			} else {
 				var value = move.aiValue();
@@ -554,6 +552,10 @@ function Creature (options) {
 		this.moves.push(this.availableSkills[index]);
 		this.availableSkills.splice(index, 1);
 		fullHeal();
+	}
+
+	this.canUse = function (action) {
+		return this.energy >= action.energyCost;
 	}
 }
 

@@ -97,11 +97,11 @@ icon: neptune9.2/neptune9.2-icon.png
 				<div 
 				class="actionbutton"
 				ng-repeat="action in player().card.creature.moves" 
-				ng-class="{selected: $index==selectedAction}"
+				ng-class="{selected: $index==selectedAction, disabled: !player().card.creature.canUse(action)}"
 				ng-click="useAction($index)">
 				{{action.name}}
 				<span class="actionodds">{{player().actionOdds[player().getTargetNum()][$index]}}</span>
-				<span ng-if="action.energyCost" class="action-cost">{{energyCostIcon(action)}}</span>
+				<span class="action-cost">{{energyCostIcon(action)}}</span>
 				</div>
 				<p ng-if="player().card.creature.moves.length < 3">
 					You are <b>{{player().card.creature.name}}</b>. On your turn, click on a creature to target, then click on an action like 'Shoot'.

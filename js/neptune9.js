@@ -251,7 +251,6 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 
 	$scope.energyCostIcon = function (action) {
-		if (!action.energyCost) return null;
 		var out = "";
 		for (var i = 0; i < action.energyCost / 3; i++) {
 			out += "•";
