@@ -577,3 +577,13 @@ var Keyboard = function () {
   	});
   }, false);
 };
+
+function preloadImages () {
+	urls = ["dead.png", "dopnot.png", "drain.png", "drain-miss.png", "energy.png", "energy-miss.png",
+		"gobnit.png", "heal.png", "heal-miss.png", "leepig.png", "missionary.png", "rest.png", "shot.png",
+		"shot-miss.png", "spy.png", "weewit.png", "whack.png"];
+	urls.forEach(function (url) {
+		var img=new Image();
+    	img.src="art/" + url;	
+	});
+}

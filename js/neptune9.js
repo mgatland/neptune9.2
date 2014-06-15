@@ -173,6 +173,8 @@ angular.module('neptune9', ['ngAnimate'])
 		if (player) return player.isLocal;
 		return false;
 	}
+
+	preloadImages();
 })
 
 .controller('CardCtrl', function($scope, gameService) {
