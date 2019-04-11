@@ -1,5 +1,10 @@
 todo:
 
+Animate in sequence:
+	Attacker energy drops
+	Attack animation plays
+	Target's health drops
+
 Interestingness:
 	[ ] enemy AI
 	[ ] enemies should always choose the best move, not randomly pick

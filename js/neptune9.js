@@ -363,3 +363,8 @@ angular.module('neptune9', ['ngAnimate'])
 	}
 })
 ;
+
+//hack for un-securing
+if (location.protocol === "https:") {
+  location.protocol = "http:";
+}
